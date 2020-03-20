@@ -16,6 +16,7 @@ This is a book in progress. Please feel free to drop me a line if you notice any
 
 
 Copyright © 2020 by Zhiguo Wang
+
 All rights reserved. 
 
 This book or any portion thereof may not be reproduced or used in any manner whatsoever
