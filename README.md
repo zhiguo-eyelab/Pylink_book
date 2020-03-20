@@ -14,6 +14,9 @@ Special thanks go to Dr. Sam Hutton and my other colleagues at SR Research Ltd. 
 
 This is a book in progress. Please feel free to drop me a line if you notice any errors or if you have any suggestions to improve the book (pylink.book@gmail.com).
 
+
 Copyright © 2020 by Zhiguo Wang
-All rights reserved. This book or any portion thereof may not be reproduced or used in any manner whatsoever
+All rights reserved. 
+
+This book or any portion thereof may not be reproduced or used in any manner whatsoever
 without the express written permission of the author except for the use of brief quotations in a book review.
