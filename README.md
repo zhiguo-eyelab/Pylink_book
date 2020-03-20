@@ -1,5 +1,4 @@
-# Pylink_book
-Eye-tracking with Python and Pylink
+# Eye-tracking with Python and Pylink
 
 Python is becoming more and more popular among scientists. Its application in psychology and neuroscience has expanded from scripting computer-based experimental tasks to all aspects of research, including but not limited to data collection, analysis, and visualization.
  
