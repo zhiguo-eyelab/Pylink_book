@@ -10,4 +10,6 @@ Eye-tracking is a commonly used research technique in cognitive and neuroscience
  
 This book will first introduce the building blocks and syntax of Python, then discuss libraries that we can use to program psychology experiments, i.e., PsychoPy and Pygame. For eye-tracking, this book will feature the Pylink library, a Python interface to the EyeLink Developer’s Kit. The example scripts accompanying this book are freely available on GitHub, https://github.com/zhiguo-eyelab/Pylink-Book. This book is a useful reference for eye-tracking researchers, but you can also use it in graduate or undergraduate level programming courses.
  
-Special thanks go to Dr. Sam Hutton and my other colleagues at SR Research Ltd. for their valuable feedback on an earlier version of this book. Please feel free to drop me a line if you notice any errors in the book (pylink. book@gmail.com).
+Special thanks go to Dr. Sam Hutton and my other colleagues at SR Research Ltd. for their valuable feedback on an earlier version of this book. 
+
+This is a book in progress. Please feel free to drop me a line if you notice any errors or if you have any suggestions to improve the book (pylink.book@gmail.com).
