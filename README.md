@@ -1,5 +1,7 @@
 # Eye-tracking with Python and Pylink
 
+## Zhiguo Wang, PhD
+
 Python is becoming more and more popular among scientists. Its application in psychology and neuroscience has expanded from scripting computer-based experimental tasks to all aspects of research, including but not limited to data collection, analysis, and visualization.
  
 I had no experience with computer programming when I entered graduate school about 16 years ago. I looked hard for a programming book for psychology students who typically know little about programming. Sadly, there were none at that time. I spent quite some time trying out different programming languages and tools and finally settled down with Python for its easy syntax, flexibility, versatility, and open community.
