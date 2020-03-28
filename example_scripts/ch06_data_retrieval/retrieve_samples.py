@@ -46,7 +46,7 @@ while True:
 
         timestamp = dt.getTime() 
         if timestamp > smp_time:
-            smp = map(str,[dt.getTime(),gaze,href,raw,pupil])
+            smp = map(str,[timestamp,gaze,href,raw,pupil])
             text_file.write('\t'.join(smp) + '\n')
             smp_time = timestamp
         

@@ -1,3 +1,5 @@
+# Filename: retrieve_events_2.py
+
 import pylink
 
 # connect to the tracker and open an EDF
