@@ -8,8 +8,8 @@ tk.openDataFile('ev_test.edf')
 
 tk.sendCommand('sample_rate 1000') # set sampling rate to 1000 Hz
 
-# make sure gaze, HREF, and raw (PUPIL) data is available over the link
-tk.sendCommand('link_event_data = GAZE,GAZERES,HREF,AREA,HREF,VELOCITY')
+# make sure all types of event data are available over the link
+tk.sendCommand("link_event_filter = LEFT,RIGHT,FIXATION,FIXUPDATE,SACCADE,BLINK,BUTTON,INPUT")
 
 # open a window to calibrate the tracker
 pylink.openGraphics()
