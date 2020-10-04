@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw
 
 # path to the EDF data file
 edf_dir = 'Picture/results/zw/'
-# open converted ASC file
+# open the converted ASC file
 asc = open(edf_dir + 'zw.asc', 'r')
 
 trial_start = False
@@ -14,9 +14,9 @@ for line in asc:
     # convert the current data line into a list
     tmp_data = line.split()
 
-# get screen resolution
-if 'GAZE_COORDS' in line:
-    scn_w, scn_h = [int(float(x)) + 1 for x in tmp_data[-2:]]
+    # get screen resolution
+    if 'GAZE_COORDS' in line:
+        scn_w, scn_h = [int(float(x)) + 1 for x in tmp_data[-2:]]
 
     # message marking image onset
     if 'SYNCTIME' in line: 
@@ -37,7 +37,8 @@ if 'GAZE_COORDS' in line:
             vcl = open(edf_dir + tmp_data[-1], 'r')
             for draw_commands in vcl:
                 # looking for the IMGLOAD command
-                # MSG 0 IMGLOAD TOP_LEFT  ../../runtime/images/5495090083862704888.png 0 0 1920 1080
+                # MSG 0 IMGLOAD TOP_LEFT  ../../runtime/
+                # images/5495090083862704888.png 0 0 1920 1080
                 if 'IMGLOAD' in draw_commands:
                     tmp_list = draw_commands.split()
                     bg_image = [s for s in tmp_list if 'png' in s][0]

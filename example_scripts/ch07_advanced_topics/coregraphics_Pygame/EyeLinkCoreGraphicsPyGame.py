@@ -10,60 +10,61 @@ class EyeLinkCoreGraphicsPyGame(pylink.EyeLinkCustomDisplay):
     def __init__(self, tracker, win):
         pylink.EyeLinkCustomDisplay.__init__(self)
 
-        # calibration color, calibration target size, and warning beep
-        self.backgroundColor = (128, 128, 128)
-        self.foregroundColor = (0,0,0)
-        self.targetSize = 32 # diameter of the target circle
-        self.enableBeep = True # whether we should play warning beeps
-
-        # screen to use for calibration
-        self.win = win
-        # set up the tracker
-        self.tracker = tracker
-            
-        # warning beeps
+        self.win = win # screen to use for calibration
+        self.tracker = tracker # connection to the tracker
+        
+        self.bgColor = (128, 128, 128) # target color (foreground)
+        self.fgColor = (0,0,0) # target color (background)
+        self.targetSize = 32 # diameter of the target
+        
+        self.enableBeep = True # play warning beeps, True or False
         self.__target_beep__ = pygame.mixer.Sound("type.wav")
         self.__target_beep__done__ = pygame.mixer.Sound("qbeep.wav")
         self.__target_beep__error__ = pygame.mixer.Sound("error.wav")
         
-        # initialize some variables for later use
-        self.imagebuffer = array.array('I') # buffer for camera image
-        self.pal = [] # image palatte, with which the index will be used for drawing
-        self.size = [384, 320] # size of the camera image
-        self.fnt = pygame.font.SysFont('Arial', 20) # we will use this for text messages
-        self.last_mouse_state = -1 # mouse status
-        self.img_SF = 1 # enlarge the camera image for displaying
-    
-    def setup_cal_display (self):
-        self.win.fill(self.backgroundColor)
-        pygame.display.flip()
+        self.img_SF = 2 # scaling factor for the camera image
+        self.size = (192*self.img_SF, 160*self.img_SF) # size of the camera image
+        self.imagebuffer = array.array('I') # buffer to store camera image
+        self.pal = [] # image palatte; its indices are used to reconstruct the camera image
         
-    def exit_cal_display(self): 
+        self.fnt = pygame.font.SysFont('Arial', 26) # we will use this for text messages
+
+        self.last_mouse_state = -1
+        
+    def setup_cal_display (self):
+        '''setup calibration/validation display'''
+        
+        self.clear_cal_display()
+        pygame.display.flip()
+        self.clear_cal_display()
+        
+    def exit_cal_display(self):
+        '''exit calibration/validation display'''
+        
         self.clear_cal_display()
 
     def record_abort_hide(self):
         pass
 
     def clear_cal_display(self): 
-        self.win.fill(self.backgroundColor)
-
-    def erase_cal_target(self):
-        self.win.fill(self.backgroundColor)
-        pygame.display.flip()
+        self.win.fill(self.bgColor)
         
+    def erase_cal_target(self):
+        self.clear_cal_display()
+        pygame.display.flip()
+        self.clear_cal_display()
+
     def draw_cal_target(self, x, y):
         ''' draw the calibration target, i.e., a bull's eye'''
-        
-        pygame.draw.circle(self.win, self.foregroundColor, (x,y), int(self.targetSize/2.))
-        pygame.draw.circle(self.win, self.backgroundColor, (x,y), int(self.targetSize/4.))        
+
+        pygame.draw.circle(self.win, self.fgColor, (x,y), int(self.targetSize/2.))
+        pygame.draw.circle(self.win, self.bgColor, (x,y), int(self.targetSize/4.))        
         pygame.display.flip()
         
     def play_beep(self, beepid):
         '''play warning beeps if being requested'''
         
-        if not self.enableBeep:
-            pass
-        else:
+        if self.enableBeep:
             if beepid == pylink.DC_TARG_BEEP or beepid == pylink.CAL_TARG_BEEP:
                 self.__target_beep__.play()
             elif beepid == pylink.CAL_ERR_BEEP or beepid == pylink.DC_ERR_BEEP:
@@ -92,14 +93,15 @@ class EyeLinkCoreGraphicsPyGame(pylink.EyeLinkCustomDisplay):
 
         color = self.getColorFromIndex(colorindex)
 
-        # the old API assumes a camera image of 192 x 160 pixel
-        # the following conversion will fix that 
-        w,h = self.__img__.get_size()
-        x1 = int(x1*1.0/self.size[0] * w)
-        x2 = int(x2*1.0/self.size[0] * w)
-        y1 = int(y1*1.0/self.size[1] * h)
-        y2 = int(y2*1.0/self.size[1] * h)
-        if True not in [i <0 for i in [x1, y1, x2, y2]]:
+        # get the camera image rect, then scale
+        if self.size[0] > 192:
+            imr = self.__img__.get_rect()
+            x1 = int((float(x1) / 192) * imr.w)
+            x2 = int((float(x2) / 192) * imr.w)
+            y1 = int((float(y1) / 160) * imr.h)
+            y2 = int((float(y2) / 160) * imr.h)
+        # draw the line
+        if not True in [x <0 for x in [x1, x2, y1, y2]]:
             pygame.draw.line(self.__img__, color, (x1, y1), (x2, y2))
 
     def draw_lozenge(self, x, y, width, height, colorindex):
@@ -107,11 +109,13 @@ class EyeLinkCoreGraphicsPyGame(pylink.EyeLinkCustomDisplay):
         
         color = self.getColorFromIndex(colorindex)
         
-        w,h = self.__img__.get_size()
-        x = int(x/ self.size[0] * w)
-        width = int(width/ self.size[0]* w)
-        y = int(y/ self.size[1] * h)
-        height = int(height / self.size[1] * h)
+        if self.size[0] > 192:
+            imr = self.__img__.get_rect()
+            x = int((float(x) / 192) * imr.w)
+            y = int((float(y) / 160) * imr.h)
+            width  = int((float(width) / 192) * imr.w)
+            height = int((float(height) / 160) * imr.h)
+	
         if width > height:
             rad = int(height / 2.)
             if rad == 0:
@@ -133,12 +137,10 @@ class EyeLinkCoreGraphicsPyGame(pylink.EyeLinkCustomDisplay):
 
     def get_mouse_state(self):
         ''' get mouse position and states'''
-        
+
         pos = pygame.mouse.get_pos()
-        pos = (int(pos[0]*1.0/self.win.get_width()*self.size[0]),
-               int(pos[1]*1.0/self.win.get_height()*self.size[1]))
-        
         state = pygame.mouse.get_pressed()
+        
         return (pos, state[0])
     
     def get_input_key(self):
@@ -146,9 +148,7 @@ class EyeLinkCoreGraphicsPyGame(pylink.EyeLinkCustomDisplay):
         
         ky = []
         for ev in pygame.event.get():
-            if ev.type != KEYDOWN:
-                pass
-            else:
+            if ev.type == KEYDOWN:
                 keycode = ev.key
                 if keycode == K_F1:  keycode = pylink.F1_KEY
                 elif keycode == K_F2:  keycode = pylink.F2_KEY
@@ -160,63 +160,58 @@ class EyeLinkCoreGraphicsPyGame(pylink.EyeLinkCustomDisplay):
                 elif keycode == K_F8:  keycode = pylink.F8_KEY
                 elif keycode == K_F9:  keycode = pylink.F9_KEY
                 elif keycode == K_F10: keycode = pylink.F10_KEY
-
                 elif keycode == K_PAGEUP: keycode = pylink.PAGE_UP
                 elif keycode == K_PAGEDOWN:  keycode = pylink.PAGE_DOWN
                 elif keycode == K_UP:   keycode = pylink.CURS_UP
                 elif keycode == K_DOWN:  keycode = pylink.CURS_DOWN
                 elif keycode == K_LEFT:  keycode = pylink.CURS_LEFT
                 elif keycode == K_RIGHT: keycode = pylink.CURS_RIGHT
-
                 elif keycode == K_BACKSPACE:    keycode = ord('\b')
                 elif keycode == K_RETURN:  keycode = pylink.ENTER_KEY
                 elif keycode == K_ESCAPE:  keycode = pylink.ESC_KEY
                 elif keycode == K_TAB:   keycode = ord('\t')
                 elif(keycode == pylink.JUNK_KEY): keycode = 0
-                
+                else:
+                    pass
                 ky.append(pylink.KeyInput(keycode, ev.mod))
+                
         return ky
         
     def exit_image_display(self):
+        ''' exit the camera image display'''
+        
         self.clear_cal_display()
         pygame.display.flip()
+        self.clear_cal_display()
         
     def alert_printf(self, msg): 
         print(msg)
             
     def setup_image_display(self, width, height):
+        ''' set up the camera image dislay '''
+        
+        self.clear_cal_display()
+        pygame.display.flip()
         self.clear_cal_display()
         self.last_mouse_state = -1
+	
+        # return 1 to request high-resolution camera image
+        return 1
         
     def image_title(self, text):
-        ''' show pupil CR thresholds below the image'''
+        ''' show the camera image title: pupil CR thresholds below the image'''
         
         txt_w, txt_h = self.fnt.size(text)
         win_w, win_h = self.win.get_size()
         cam_w, cam_h = self.size
-        txt_surf = self.fnt.render(text, True, self.foregroundColor)
-        txt_pos = (int((win_w - txt_w)/2),int((win_h + cam_h*self.img_SF)/2 + txt_h))
-        # we need to clear the text area first
-        pygame.draw.rect(self.win, self.backgroundColor, pygame.Rect((0, txt_pos[1]), (win_w, txt_h)))
-        self.win.blit(txt_surf, txt_pos)
-        pygame.display.flip()
-        # redraw in the back buffer
-        pygame.draw.rect(self.win, self.backgroundColor, pygame.Rect((0, txt_pos[1]), (win_w, txt_h)))
-        self.win.blit(txt_surf, txt_pos)
+        txt_surf = self.fnt.render(text, True, self.fgColor)
+        txt_pos = (int((win_w - txt_w)/2),int((win_h + cam_h)/2 + txt_h))
+        self.clear_cal_display() # clear the screen
+        self.win.blit(txt_surf, txt_pos) # draw the texts
         
     def draw_image_line(self, width, line, totlines, buff):         
         ''' draw the camera image'''
-
-        self.size = [width, totlines] # update the size of camera image
-        # clear the image buffer when a new image comes in, i.e., line ==1
-        if line == 1:
-            self.imagebuffer = array.array('I')
-
-        if totlines < 320:
-            self.img_SF = 2
-        else:
-            self.img_SF = 1
-
+        
         for i in range(width):
             try:
                 self.imagebuffer.append(self.pal[buff[i]])
@@ -224,13 +219,19 @@ class EyeLinkCoreGraphicsPyGame(pylink.EyeLinkCustomDisplay):
                 pass
             
         if line == totlines:
-            self.__img__ = pygame.image.frombuffer(self.imagebuffer, (width, totlines), 'RGBX')
+            cam_img = pygame.image.frombuffer(self.imagebuffer.tostring(), (width, totlines), 'RGBX')
+
+            self.__img__ = cam_img
             self.draw_cross_hair()
-            cam_img = pygame.transform.scale(self.__img__, (width*self.img_SF,
-                                                            totlines*self.img_SF))
             self.__img__ = None
-            cam_img_pos = ((self.win.get_width()-cam_img.get_width())/2,
-                           (self.win.get_height()-cam_img.get_height())/2)
+            
+            # scale the image, if needed
+            self.size = (width*self.img_SF, totlines*self.img_SF)
+            cam_img = pygame.transform.scale(cam_img, self.size)
+
+            # draw the camera image on screen
+            cam_img_pos = ((self.win.get_width()-width*self.img_SF)/2,
+                           (self.win.get_height()-totlines*self.img_SF)/2)
             self.win.blit(cam_img, cam_img_pos)
             pygame.display.flip()
             # redraw in the back buffer
