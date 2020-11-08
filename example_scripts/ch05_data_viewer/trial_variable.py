@@ -1,40 +1,48 @@
 # Filename: trial_variable.py
+# Author: Zhiguo Wang
+# Date: 11/7/2020
+#
+# Description:
+# This script illustrates the TRIAL_VAR messages
+# that Data Viewer uses to parse variables
+
 import pylink
 
-# connect to the tracker
+# Connect to the tracker
 tk = pylink.EyeLink()
 
-# open an EDF on the Host
-tk.openDataFile('seg.edf')
+# Open an EDF on the Host; filename must not exceed 8 characters
+tk.openDataFile('vars.edf')
 
-# run through five trials
-for trial in range(1,6):
-    #print a message to show the current trial #
+# Run through five trials
+for trial in range(1, 6):
+    # Print out a message to show the current trial
     print("Trial #: %d" % trial)
-    
-    # log a TRIALID message to mark trial start
+
+    # Log a TRIALID message to mark trial start
     tk.sendMessage('TRIALID %d' % trial)
-    
-    tk.startRecording(1,1,1,1) # start recording
-    pylink.pumpDelay(2000) # record for 2-sec
-    tk.stopRecording() # stop recording
-    
-    # store trial variables in the EDF data file
+
+    # Start recording
+    tk.startRecording(1, 1, 1, 1)
+
+    # Pretending that we are doing something for 2-sec
+    pylink.pumpDelay(2000)
+
+    # Stop recording
+    tk.stopRecording()
+
+    # Send TRIAL_VAR messages to store variables in the EDF
     tk.sendMessage('!V TRIAL_VAR condition step')
     tk.sendMessage('!V TRIAL_VAR gap_duration 200')
     tk.sendMessage('!V TRIAL_VAR direction Right')
 
-    # interest area definitions
-    tk.sendMessage('!V IAREA ELLIPSE 1 0 0 100 100 head')
-    tk.sendMessage('!V IAREA RECTANGLE 2 85 85 285 185 body')
-    tk.sendMessage('!V IAREA FREEHAND 3 285,125 385,50 335,125 tail')
-
-    # send the TRIAL_RESULT message to mark the end of a trial
+    # Log a TRIAL_RESULT message to mark trial ends
     tk.sendMessage('TRIAL_RESULT 0')
 
-# retrieve data file
+# Close the EDF file and download it from the Host PC
+pylink.msecDelay(100)  # wait for 100 to catch session end events
 tk.closeDataFile()
-tk.receiveDataFile('seg.edf', 'seg.edf')
+tk.receiveDataFile('vars.edf', 'trial_variable_demo.edf')
 
-# close the link
+# Close the link
 tk.close()

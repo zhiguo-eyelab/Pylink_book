@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 edf_dir = 'Picture/results/zw/' # path to the EDF data file
-os.system('edf2asc -y %s' %(edf_dir + 'zw.edf')) # convert the EDF file
+os.system('edf2asc -y %s' %(edf_dir + 'zw.edf')) # convert the EDF
 asc = open(edf_dir + 'zw.asc', 'r') # open converted ASC file
 
 scn_w, scn_h = [-32768, -32768]
@@ -37,7 +37,9 @@ for line in asc:
           
     if re.search('blank_screen', line): # message marking image offset
         # put samples in a pandas data frame and store it in trial_DFs
-        trial_DFs[trial_number] = pd.DataFrame({'timestamp': t, 'gaze_x': x, 'gaze_y': y, 'pupil': p})
+        trial_DFs[trial_number] = pd.DataFrame({'timestamp': t, \
+                                                'gaze_x': x, 'gaze_y': y, \
+                                                'pupil': p})
         trial_start = False
 
 asc.close() # close the ASC file

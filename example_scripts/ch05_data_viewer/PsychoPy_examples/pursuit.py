@@ -1,105 +1,125 @@
 # Filename: pursuit.py
-import pylink, os, random
+# Author: Zhiguo Wang
+# Date: 11/7/2020
+#
+# Description:
+# A simple smooth pursuit task implemented in PsychoPy
+
+import pylink
+import os
+import random
 from psychopy import visual, core, event, monitors
 from EyeLinkCoreGraphicsPsychoPy import EyeLinkCoreGraphicsPsychoPy
 from math import sin, pi
 
-# SETP 1: connect to the tracker
+# Monitor resolution
+SCN_WIDTH, SCN_HEIGHT = (1280, 800)
+
+# Step 1: Connect to the tracker
 tk = pylink.EyeLink('100.1.1.1')
 
-# STEP 2: Open an EDF data file on the Host
+# Step 2: Open an EDF data file on the Host
 tk.openDataFile('pursuit.edf')
-# add personalized data file header (preamble text)
-tk.sendCommand("add_file_preamble_text 'Psychopy pursuit demo'")
+# Add preamble text (file header)
+tk.sendCommand("add_file_preamble_text 'Smooth pursuit demo'")
 
-# STEP 3: # open a window for graphics and calibration
-scnWidth, scnHeight = (1280, 800)
+# Step 3: Setup Host parameters
+# put the tracker in idle mode before we change its parameters
+tk.setOfflineMode()
+pylink.msecDelay(50)
 
-#always create a monitor object before you run the script
+# Sample rate, 250, 500, 1000, or 2000
+# this command does not support EyeLInk II/I
+tk.sendCommand('sample_rate 500')
+
+# Send the resolution of the monitor to the tracker
+tk.sendCommand("screen_pixel_coords = 0 0 %d %d" % (SCN_WIDTH-1, SCN_HEIGHT-1))
+
+# Save monitor resolution in EDF data file,
+# so Data Viewer can correctly load background graphics
+tk.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (SCN_WIDTH-1, SCN_HEIGHT-1))
+
+# Choose a calibration type, H3, HV3, HV5, HV13 (HV = horizontal/vertical)
+tk.sendCommand("calibration_type = HV9")
+
+# Step 4: # open a window for graphics and calibration
+# Always create a monitor object before you run the script
 customMon = monitors.Monitor('demoMon', width=35, distance=65)
-customMon.setSizePix((scnWidth, scnHeight))
+customMon.setSizePix((SCN_WIDTH, SCN_HEIGHT))
 
-# open a window
-win = visual.Window((scnWidth, scnHeight), fullscr=True, monitor=customMon, units='pix', allowStencil=True)
+# Open a window
+win = visual.Window((SCN_WIDTH, SCN_HEIGHT), fullscr=False,
+                    monitor=customMon, units='pix', allowStencil=True)
 
-# require Pylink to use custom calibration graphics--"EyeLinkCoreGraphicsPsychopy.py"
+# Request Pylink to use the PsychoPy window for calibration
 graphics = EyeLinkCoreGraphicsPsychoPy(tk, win)
 pylink.openGraphicsEx(graphics)
 
-# STEP 4: Setup Host parameters
-# put the tracker in idle mode before we change its parameters
-tk.setOfflineMode()
-pylink.pumpDelay(50)
-
-# sampling rate, 250, 500, 1000, or 2000; this command does not support EyeLInk II/I
-tk.sendCommand('sample_rate 500')
-
-# send the resolution of the monitor to the tracker
-tk.sendCommand("screen_pixel_coords = 0 0 %d %d" % (scnWidth-1, scnHeight-1))
-# save monitor resolution in EDF data file for Data Viewer to correctly load background graphics
-tk.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (scnWidth-1, scnHeight-1))
-
-# choose a calibration type, H3, HV3, HV5, HV13 (HV = horiztonal/vertical)
-tk.sendCommand("calibration_type = HV9")
-
-# STEP 5: prepare the pursuit target, the clock and the movement parameters
+# Step 5: prepare the pursuit target, the clock and the movement parameters
 target = visual.GratingStim(win, tex=None, mask='circle', size=25)
 pursuitClock = core.Clock()
 
-# paramters for the Sinusoidal movement pattern 
+# Paramters for the Sinusoidal movement pattern
 # [amp_x, amp_y, phase_x, phase_y, freq_x, freq_y]
-mov_pars = [[300, 300, pi*3/2, pi*2, 1.0, 1.0],
-            [300, 300, pi*3/2, pi, 1.0, 1.0]]
+mov_pars = [
+    [300, 300, pi*3/2, pi*2, 1.0, 1.0],
+    [300, 300, pi*3/2, pi, 1.0, 1.0]
+    ]
 
-# Step 6: show some instructions and calibrate the tracker
-msg = visual.TextStim(win, text = 'Press Enter twice to calibrate the tracker', color = 'white', units = 'pix')
-msg.draw()
+# Step 6: show some instructions and calibrate the tracker.
+calib_prompt = 'Press Enter twice to calibrate the tracker'
+calib_msg = visual.TextStim(win, text=calib_prompt, color='white', units='pix')
+calib_msg.draw()
 win.flip()
 event.waitKeys()
 
-# calibrate the tracker
+# Calibrate the tracker
 tk.doTrackerSetup()
 
-# SETP 7: Run through a couple of trials
+
+# Step 7: Run through a couple of trials
 # here we define a function to group the code that will executed on each trial
-def runTrial(trial_duration, movement_pars):
-    """ trial_duration: the duration of the pursuit movement
-        movement_pars: [ amp_x, amp_y, phase_x, phase_y, freq_x, freq_y]
-        The Sinusoidal movement pattern is determined by the following equation
-        y(t) = amplitude * sin(frequency * t + phase)
-        for a circular or elliptical movements, the phase in x and y directions
-        should be pi/2 (direction matters) """
-    
-    # parse the movement pattern parameters
+def run_trial(trial_duration, movement_pars):
+    """ Run a smooth pursuit trial
+
+    trial_duration: the duration of the pursuit movement
+    movement_pars: [ amp_x, amp_y, phase_x, phase_y, freq_x, freq_y]
+    The Sinusoidal movement pattern is determined by the following equation
+    y(t) = amplitude * sin(frequency * t + phase)
+    for a circular or elliptical movements, the phase in x and y directions
+    should be pi/2 (direction matters) """
+
+    # Parse the movement pattern parameters
     amp_x, amp_y, phase_x, phase_y, freq_x, freq_y = movement_pars
-    
-    # take the tracker offline
+
+    # Take the tracker offline
     tk.setOfflineMode()
     pylink.msecDelay(50)
-    
-    # send the standard "TRIALID" message to mark the start of a trial
+
+    # Send the standard "TRIALID" message to mark the start of a trial
     tk.sendMessage("TRIALID")
 
-    # record_status_message : show some info on the Host PC
+    # Record_status_message : show some info on the Host PC
     tk.sendCommand("record_status_message 'Pursuit demo'")
-    
-    # drift check/correction, params, x, y, draw_target, allow_setup
+
+    # Drift check/correction, params, x, y, draw_target, allow_setup
     try:
-        tk.doDriftCorrect(int(scnWidth/2-amp_x), int(scnHeight/2), 1, 1)
+        tk.doDriftCorrect(int(SCN_WIDTH/2-amp_x), int(SCN_HEIGHT/2), 1, 1)
     except:
         tk.doTrackerSetup()
 
-    # start recording
-    # params: sample_in_file, event_in_file, sampe_over_link, event_over_link (1-yes, 0-no)
+    # Start recording
+    # params: sample_in_file, event_in_file,
+    # sampe_over_link, event_over_link (1-yes, 0-no)
     tk.startRecording(1, 1, 1, 1)
-    # wait for 50 ms to cache some samples
+    # Wait for 50 ms to cache some samples
     pylink.msecDelay(50)
-    
-    # movement starts here
+
+    # Movement starts here
     win.flip()
     pursuitClock.reset()
-    
-    # send a message to mark movement onset
+
+    # Send a message to mark movement onset
     tk.sendMessage('Movement_onset')
     while True:
         time_elapsed = pursuitClock.getTime()
@@ -111,41 +131,52 @@ def runTrial(trial_duration, movement_pars):
             target.pos = (tar_x, tar_y)
             target.draw()
             win.flip()
-            tk.sendMessage('!V TARGET_POS target %d, %d 1 0' % (tar_x + int(scnWidth/2), int(scnHeight/2)-tar_y))
+            tar_pos = (tar_x + int(SCN_WIDTH/2), int(SCN_HEIGHT/2)-tar_y)
+            tk.sendMessage('!V TARGET_POS target %d, %d 1 0' % tar_pos)
 
-    # send a message to mark movement offset
+    # Send a message to mark movement offset
     tk.sendMessage('Movement_offset')
     # clear the subject display
-    win.color=[0,0,0]
+    win.color = (0, 0, 0)
     win.flip()
 
-    # stop recording
-    tk.stopRecording() 
+    # Stop recording
+    tk.stopRecording()
 
-    # send over the standard 'TRIAL_RESULT' message to mark the end of trial
+    # Send trial variables to record in the EDF data file
+    tk.sendMessage("!V TRIAL_VAR amp_x %.2f" % amp_x)
+    tk.sendMessage("!V TRIAL_VAR amp_y %.2f" % amp_y)
+    tk.sendMessage("!V TRIAL_VAR phase_x %.2f" % phase_x)
+    tk.sendMessage("!V TRIAL_VAR phase_y %.2f" % phase_y)
+    tk.sendMessage("!V TRIAL_VAR freq_x %.2f" % freq_x)
+    tk.sendMessage("!V TRIAL_VAR freq_y %.2f" % freq_y)
+    tk.sendMessage("!V TRIAL_VAR duration %.2f" % trial_duration)
+
+    # Send a 'TRIAL_RESULT' message to mark the end of trial
     tk.sendMessage('TRIAL_RESULT')
     pylink.pumpDelay(50)
 
-# run a block of 2 trials, in random order
-testList = mov_pars[:] 
-random.shuffle(testList)
-for trial in testList: 
-    runTrial(10.0, trial)
+# Run a block of 2 trials, in random order
+test_list = mov_pars[:]
+random.shuffle(test_list)
+for trial in test_list:
+    run_trial(5.0, trial)
 
-# Step 8: close the EDF data file and put the tracker in idle mode
+# Step 8: Close the EDF data file and put the tracker in idle mode
 tk.closeDataFile()
 tk.setOfflineMode()
 pylink.pumpDelay(100)
 
-# Step 9: copy EDF file to Display PC and put it in local folder ('edfData')
-edfTransfer = visual.TextStim(win, text='EDF data is transfering from EyeLink Host PC ...', color='white')
-edfTransfer.draw()
+# Step 9: Download EDF file to a local folder ('edfData')
+msg = 'Downloading EDF file from the EyeLink Host PC ...'
+edf = visual.TextStim(win, text=msg, color='white')
+edf.draw()
 win.flip()
 
-if not os.path.exists('edfData'): 
+if not os.path.exists('edfData'):
     os.mkdir('edfData')
-tk.receiveDataFile('pursuit.edf', 'edfData/pursuit.edf')
+tk.receiveDataFile('pursuit.edf', 'edfData/pursuit_demo.edf')
 
-# Step 10: close the connection to tracker, close graphics
+# Step 10: Close the connection to tracker, close graphics
 tk.close()
 core.quit()

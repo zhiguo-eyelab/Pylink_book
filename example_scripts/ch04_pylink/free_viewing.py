@@ -1,4 +1,4 @@
-# Filename: free_view.py
+# Filename: free_viewing.py
 
 import pylink
 import pygame
@@ -13,44 +13,39 @@ t_pars = [['lake.png', 'c'],
           ['train.png', 'c'],
           ['train_blur.png', 'b']]
 
-# Step 1: connect to the tracker
+# Step 1: Connect to the tracker
 tk = pylink.EyeLink('100.1.1.1')
 
-# Step 2: open a Pygame window first; then call openGraphics()
-# to let Pylink use the Pygame window for calibration
-pygame.display.set_mode((scn_w, scn_h), DOUBLEBUF|FULLSCREEN)
-pylink.openGraphics()
+# Step 2: open EDF data file
+tk.openDataFile('freeview.edf')
+# optional file header to identify the experimental task
+tk.sendCommand("add_file_preamble_text 'Free Viewing Task in Chapter 4'")
 
-# Step 3: set some tracking parameters, e.g., sampling rate to 1000 Hz
+# Step 3: Set some tracking parameters, e.g., sampling rate
 # put the tracker in offline mode before we change its parameters
 tk.setOfflineMode()
-# give the tracker an extra 100 ms to switch operation mode
-pylink.msecDelay(100)
-
+# give the tracker 50 ms to switch to the offline mode
+pylink.msecDelay(50)
 # set the sampling rate to 1000 Hz
 tk.sendCommand("sample_rate 1000")
-
 # Send screen resolution to the tracker
 tk.sendCommand("screen_pixel_coords = 0 0 %d %d" % (scn_w-1, scn_h-1))
-
-# request the tracker to perform a standard 9-point calibration
+# request the tracker to perform a  9-point calibration
 tk.sendCommand("calibration_type = HV9")
-
-#calibrate the central 80% of the screen
+# calibrate the central 80% of the screen
 tk.sendCommand('calibration_area_proportion 0.8 0.8')
 tk.sendCommand('validation_area_proportion 0.8 0.8')
 
-# Step 4: open EDF data file
-tk.openDataFile('freeview.edf')
-# optional file header to identify the experimental task
-tk.sendCommand("add_file_preamble_text 'Free Viewing'") 
+# Step 4: open a Pygame window first; then call pylink.openGraphics()
+# to let Pylink use the Pygame window for calibration
+pygame.display.set_mode((scn_w, scn_h), DOUBLEBUF|FULLSCREEN)
+pylink.openGraphics()
 
 # Step 5: start calibration and switch to the camera setup screen
 tk.doTrackerSetup() 
 
 # run through all four trials
 for t in t_pars:
-    
     # unpacking the picture and correct response key
     pic_name, cor_key = t
 
@@ -60,14 +55,12 @@ for t in t_pars:
     # record_status_message : show some info on the Host PC
     tk.sendCommand("record_status_message 'Current Picture: %s'"% pic_name)
     
-    # drift check; parameters: x, y, draw_target, allow_setup
-    # draw_target (1-default, 0-user draw the target then call this function)
+    # do drift check and re-calibrate the tracker if ESCAPE is pressed
+    # parameters: x, y, draw_target, allow_setup
+    # draw_target (1-default, 0-draw the target then call this function)
     # allow_setup (1-allow pressing ESCAPE to recalibrate, 0-not allowed) 
-    try:
-        err = tk.doDriftCorrect(int(scn_w/2), int(scn_h/2), 1, 1)
-    except:
-        tk.doTrackerSetup()
-
+    tk.doDriftCorrect(int(scn_w/2), int(scn_h/2), 1, 1)
+            
     # start recording
     # parameters: event_in_file, sample_in_file,
     # event_over_link, sample_over_link (1-yes, 0-no)
@@ -100,8 +93,6 @@ for t in t_pars:
 tk.closeDataFile()
 tk.receiveDataFile('freeview.edf', 'freeview.edf')
 
-# Step 7: close the link to the tracker
+# Step 7: close the link to the tracker and quit Pygame
 tk.close()
-
-# quit pygame
 pygame.quit()

@@ -1,40 +1,53 @@
 # Filename: simple_drawing.py
+# Author: Zhiguo Wang
+# Date: 11/7/2020
+#
+# Description:
+# This script illustrates the various drawing commands
+# supported by Data Viewer
+
 import pylink
 
-# connect to the tracker
+# Connect to the tracker
 tk = pylink.EyeLink()
 
-# log the screen size for Data Viewer to draw graphics
-tk.sendMessage('DISPLAY_SCREEN 0 0 1024 768')
+# Open an EDF on the Host; filename must not exceed 8 characters
+tk.openDataFile('drawing.edf')
 
-# open an EDF on the Host
-tk.openDataFile('seg.edf')
-
-# run through five trials of 2-second recordings
-for trial in range(1,6):
-    #print a message to show the current trial #
+# Run through five trials
+for trial in range(1, 6):
+    # Print out a message to show the current trial
     print("Trial #: %d" % trial)
-    
-    # the TRIALID message marks the start of a new trial
+
+    # Log a TRIALID message to mark trial start
     tk.sendMessage('TRIALID %d' % trial)
-    
-    tk.startRecording(1,1,1,1) # start recording
-  
-    # draw a central fixation flanked by two possible targets
-    tk.sendMessage('!V CLEAR 255 255 255') # clear the screen to show white background
-    tk.sendMessage('!V FIXPOINT 0 0 0 0 0 0 512 384 25 0') # central fixation dot
-    tk.sendMessage('!V FIXPOINT 0 0 0 255 255 255 312 384 80 75') # non-target
-    tk.sendMessage('!V FIXPOINT 255 0 0 255 0 0 712 384 80 0') # target
 
-    pylink.pumpDelay(2000) # record for 2-sec
-    tk.stopRecording() # stop recording
+    # Start recording
+    tk.startRecording(1, 1, 1, 1)
 
-    # send the TRIAL_RESULT message to mark the end of a trial
+    # Draw a central fixation flanked by two possible targets
+    # Clear the screen to show white background
+    tk.sendMessage('!V CLEAR 255 255 255')
+    # Draw a central fixation dot
+    tk.sendMessage('!V FIXPOINT 0 0 0 0 0 0 512 384 25 0')
+    # Draw the non-target
+    tk.sendMessage('!V FIXPOINT 0 0 0 255 255 255 312 384 80 75')
+    # Draw the target
+    tk.sendMessage('!V FIXPOINT 255 0 0 255 0 0 712 384 80 0')
+
+    # Pretending that we are doing something for 2-sec
+    pylink.pumpDelay(2000)
+
+    # Stop recording
+    tk.stopRecording()
+
+    # Log a TRIAL_RESULT message to mark trial ends
     tk.sendMessage('TRIAL_RESULT 0')
 
-# retrieve data file
+# Close the EDF file and download it from the Host PC
+pylink.msecDelay(100)  # wait for 100 to catch session end events
 tk.closeDataFile()
-tk.receiveDataFile('seg.edf', 'seg.edf')
+tk.receiveDataFile('drawing.edf', 'drawing_demo.edf')
 
-# close the link
+# Close the link
 tk.close()

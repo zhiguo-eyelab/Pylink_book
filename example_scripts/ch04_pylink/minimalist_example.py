@@ -1,18 +1,18 @@
-# Filename: minimal_example.py
+# Filename: minimalist_example.py
 
 import pylink
 
-# Step 1: connect to the tracker
+# Step 1: Connect to the tracker
 tk = pylink.EyeLink('100.1.1.1')
 
-# Step 2: open calibration window
-pylink.openGraphics()
+# Step 2: open an EDF data file on the EyeLink Host PC
+tk.openDataFile('test.edf')
 
 # Step 3: set some tracking parameters
 tk.sendCommand("sample_rate 1000")
 
-# Step 4: open an EDF data file on the EyeLink Host PC
-tk.openDataFile('test.edf')
+# Step 4: open calibration window
+pylink.openGraphics()
 
 # Step 5: calibrate the tracker, then run five trials
 tk.doTrackerSetup()

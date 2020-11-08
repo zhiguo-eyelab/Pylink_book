@@ -4,38 +4,42 @@ import pylink
 from EyeLinkCoreGraphicsPsychoPy import EyeLinkCoreGraphicsPsychoPy
 from psychopy import visual, core, event, monitors
 
-# established a link to the tracker
+# Connect to the tracker
 tk = pylink.EyeLink('100.1.1.1')
+
+# Make sure all types of sample data is available over the link 
+tk.sendCommand("link_sample_data  = LEFT,RIGHT,GAZE,GAZERES,PUPIL,HREF,AREA,STATUS,INPUT")
 
 # Open an EDF data file
 tk.openDataFile('psychopy.edf')
 
-# Initialize custom graphics in Psychopy
-scnWidth, scnHeight = (800, 600)
+# Open a window in Psychopy
+scn_width, scn_height = (800, 600)
 # set monitor parameters 
 mon = monitors.Monitor('myMac15', width=53.0, distance=70.0)
-mon.setSizePix((scnWidth, scnHeight))
-win = visual.Window((scnWidth, scnHeight), monitor=mon, fullscr=False, color=[0,0,0],
-                    units='pix', allowStencil=True)
+mon.setSizePix((scn_width, scn_height))
+win = visual.Window((scn_width, scn_height), monitor=mon, fullscr=False,\
+                    color=[0,0,0],units='pix', allowStencil=True)
+
+# Use the PsychoPy window to present calibration targets
 genv = EyeLinkCoreGraphicsPsychoPy(tk, win)
 pylink.openGraphicsEx(genv)
 
-# make sure sample data is available over the link 
-tk.sendCommand("link_sample_data  = LEFT,RIGHT,GAZE,GAZERES,PUPIL,HREF,AREA,STATUS,INPUT")
-
-# show instructions and calibrate the tracker
-instructions = visual.TextStim(win, text='Press ENTER twice to calibrate the tracker')
-instructions.draw()
+# Calibrate the tracker
+prompt = 'Press ENTER twice to calibrate the tracker'
+calib_prompt = visual.TextStim(win, text=promp)
+calib_prompt.draw()
 win.flip()
 event.waitKeys()
 tk.doTrackerSetup()
 
-# set up a circular aperture as the gaze-contingent window
+# Set up a circular aperture and use it as a gaze-contingent window
 gaze_window = visual.Aperture(win, size=200)
 gaze_window.enabled=True
 
-# load and stretch the background image to fill full screen
-img = visual.ImageStim(win, image='sacrmeto.jpg', size=(scnWidth, scnHeight))
+# Load a background image to fill up the screen
+img = visual.ImageStim(win, image='woods.jpg', \
+                       size=(scn_width, scn_height))
 
 # start recording
 tk.startRecording(1,1,1,1)
@@ -59,7 +63,7 @@ while not terminate:
 
     # draw background image with the aperture (window)
     img.draw()
-    gaze_window.pos = (gaze_pos[0]-scnWidth/2, scnHeight/2-gaze_pos[1])
+    gaze_window.pos = (gaze_pos[0]-scn_width/2, scn_height/2-gaze_pos[1])
     win.flip()
 
 # stop recording
