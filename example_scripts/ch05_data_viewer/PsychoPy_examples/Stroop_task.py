@@ -176,7 +176,7 @@ def run_trial(params):
     # Send a 'TRIAL_RESULT' message to mark the end of trial
     tk.sendMessage("TRIAL_RESULT %d" % ACC)
 
-# Run a block of of 8 trials, in random order
+# Run a block of 8 trials, in random order
 trials_to_test = my_trials[:]*2
 random.shuffle(trials_to_test)
 for trial in trials_to_test:
