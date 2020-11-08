@@ -24,7 +24,7 @@ tk.sendCommand('link_sample_data = %s' % sample_flags)
 
 # Start recording
 error = tk.startRecording(1, 1, 1, 1)
-pylink.pumpDelay(100)  # cache some samples for event parsing
+pylink.msecDelay(100)  # cache some samples for event parsing
 
 # Open a plain text file to store the retrieved sample data
 text_file = open('sample_data.csv', 'w')
@@ -32,8 +32,8 @@ text_file = open('sample_data.csv', 'w')
 t_start = tk.trackerTime()  # current tracker time
 smp_time = -1
 while True:
-    # Break after 10 seconds have elapsed
-    if tk.trackerTime() - t_start > 3000:
+    # Break after 5 seconds have elapsed
+    if tk.trackerTime() - t_start > 5000:
         break
 
     # Poll the latest samples
