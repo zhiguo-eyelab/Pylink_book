@@ -20,7 +20,7 @@ tk = pylink.EyeLink('100.1.1.1')
 
 # Step 2: Open an EDF data file on the Host
 tk.openDataFile('video.edf')
-# Add preamble text (data file header
+# Add preamble text (file header)
 tk.sendCommand("add_file_preamble_text 'Movie playback demo'")
 
 # Step 3: Setup Host parameters
@@ -121,8 +121,8 @@ def run_trial(pars):
 
         # if a new frame is drawn, check frame timestamp and
         # send a VFRAME message
-        currentFrameTimeStamp = mov.getCurrentFrameTime()
-        if currentFrameTimeStamp != prev_frame_timestamp:
+        current_frame_timestamp = mov.getCurrentFrameTime()
+        if current_frame_timestamp != prev_frame_timestamp:
             frame_n += 1
             # send a message to mark the onset of each video frame
             tk.sendMessage('Video_Frame: %d' % frame_n)
@@ -131,7 +131,7 @@ def run_trial(pars):
             m_path = '../' + movie_file
             msg = "!V VFRAME %d %d %d %s" % (frame_n, mov_x, mov_y, m_path)
             tk.sendMessage(msg)
-            prev_frame_timestamp = currentFrameTimeStamp
+            prev_frame_timestamp = current_frame_timestamp
 
     # Send a message to mark video playback end
     tk.sendMessage("Video_terminates")
