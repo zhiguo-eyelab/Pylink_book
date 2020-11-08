@@ -139,7 +139,7 @@ def run_trial(params):
     # Clear bufferred events (in PsychoPy), then wait for key presses
     event.clearEvents(eventType='keyboard')
     gotKey = False
-    keyPressed, RT, ACC = ['None', 'None', 'None']
+    key_pressed, RT, ACC = ['None', 'None', 'None']
     while not gotKey:
         keyp = event.getKeys(['left', 'right', 'escape'])
         if len(keyp) > 0:
@@ -169,7 +169,7 @@ def run_trial(params):
     tk.sendMessage("!V TRIAL_VAR word %s" % text)
     tk.sendMessage("!V TRIAL_VAR color %s" % text_color)
     tk.sendMessage("!V TRIAL_VAR congruency %s" % congruency)
-    tk.sendMessage("!V TRIAL_VAR keyPressed %s" % key_pressed)
+    tk.sendMessage("!V TRIAL_VAR key_pressed %s" % key_pressed)
     tk.sendMessage("!V TRIAL_VAR RT %d" % RT)
     tk.sendMessage("!V TRIAL_VAR ACC %d" % ACC)
 
