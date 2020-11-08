@@ -132,7 +132,7 @@ def run_trial(params):
     # we need to provide a "time offset" in the IMGLOAD message, so
     # Data Viewer knows the correct onset time of the screen
     msg_offset = int((core.getTime()-tar_onset)*1000)
-    # Send an IMGLOAD message to let Data Viewer know which screenshot to load
+    # Send an IMGLOAD message to let DV know which screenshot to load
     path_to_scnshot = '..' + os.sep + screenshot
     tk.sendMessage('%d !V IMGLOAD FILL %s' % (msg_offset, path_to_scnshot))
 
