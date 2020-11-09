@@ -56,7 +56,7 @@ tk.bitmapSaveAndBackdrop(w, h, pixels_img, 0, 0, w, h,
 # Show the image for 1-sec on the Host PC
 pylink.msecDelay(3000)
 
-# Transfer the checkboard constructed with Hex values to the Host
+# Transfer the checkerboard constructed with Hex values to the Host
 # show it at (200,0) for 3-sec
 tk.sendCommand('clear_screen 0')
 tk.sendCommand('echo PIXELs_IN_HEX')
@@ -67,7 +67,7 @@ tk.bitmapSaveAndBackdrop(6, 600, pixels_hex, 0, 0, 6, 600,
                          150, 0, pylink.BX_MAXCONTRAST)
 pylink.msecDelay(3000)
 
-# Transfer the checkboard constructed with RGB tuples to the Host
+# Transfer the checkerboard constructed with RGB tuples to the Host
 # show it at (200, 0) for 3 sec
 tk.sendCommand('clear_screen 0')
 tk.sendCommand('echo PIXELs_IN_RGB')

@@ -37,7 +37,7 @@ smp_data = open('sample_data.csv', 'w')
 mode = -1  # initial tracker operation mode
 smp_t = -32768  # initial timestamp for samples
 while listener.isConnected():
-    # Get the curent Host mode and print it out
+    # Get the current Host mode and print it out
     current_mode = listener.getTrackerMode()  
     if current_mode is not mode:
         mode = current_mode

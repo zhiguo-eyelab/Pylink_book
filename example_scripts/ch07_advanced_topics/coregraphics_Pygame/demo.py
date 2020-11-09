@@ -31,6 +31,6 @@ pylink.openGraphicsEx(genv)
 # Setup the camera and calibrate the tracker
 tk.doTrackerSetup()
 
-# Close the link and quit pygame
+# Close the link and quit Pygame
 tk.close()
 pygame.quit()
