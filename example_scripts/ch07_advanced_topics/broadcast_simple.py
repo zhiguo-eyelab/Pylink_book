@@ -9,35 +9,36 @@
 import pylink
 listener = pylink.EyeLinkListener()
 
-print('wait for the primary connection to the tracker')
+print('Wait for a primary connection to the tracker...')
 link_connected = 0
 while not link_connected:
     # Link status info, returns an instance of the ILinkData class
     idata = listener.getTrackerInfo()
 
-    # Force tracker to send status and time
+    # Use the requestTime() and readTime() functions in pair to
+    # check if the tracker is active; if so, readTime() should return
+    # a non-zero value
     listener.requestTime()
-    t = pylink.currentTime()
-    while(pylink.currentTime()-t < 500):  # wait for response
-        tt = listener.readTime()  # will be nonzero if reply
-        if tt is not 0:  # extract connection state
+    t_start = pylink.currentTime()
+    while (pylink.currentTime()-t_start < 500):
+        tracker_time = listener.readTime()
+        if tracker_time is not 0:
             if (idata.getLinkFlags() & pylink.LINK_CONNECTED):
                 print('Link Status: %s - connected' % idata.getLinkFlags())
                 link_connected = pylink.LINK_CONNECTED
                 break
 
-# Send over command to instruct the Host PC to switch to
-# the broadcast mode
+# Request the Host PC to switch to enter the broadcast mode
 listener.broadcastOpen()
 
 # If there is a primary connection, check the current operation mode
 # and save the sample data (gaze position) to file if in recording mode
 smp_data = open('sample_data.csv', 'w')
-mode = -1
+mode = -1  # initial tracker operation mode
 smp_t = -32768  # initial timestamp for samples
 while listener.isConnected():
-    current_mode = listener.getTrackerMode()  # get the curent Host mode
-    # Print a warning message when switching modes
+    # Get the curent Host mode and print it out
+    current_mode = listener.getTrackerMode()  
     if current_mode is not mode:
         mode = current_mode
         if current_mode == pylink.EL_SETUP_MENU_MODE:
@@ -53,7 +54,7 @@ while listener.isConnected():
         if current_mode == pylink.EL_RECORD_MODE:
             print('Current mode: %d - EL_RECORD_MODE' % mode)
 
-    # Retrieve sample data if were in RECORD_MODE
+    # Retrieve sample data if the tracker is in RECORD_MODE
     if current_mode == pylink.EL_RECORD_MODE:
         smp = listener.getNewestSample()
         if (smp is not None) and (smp.getTime() != smp_t):
