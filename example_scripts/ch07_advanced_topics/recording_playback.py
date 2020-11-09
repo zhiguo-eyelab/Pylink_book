@@ -20,7 +20,7 @@ tk.sendCommand('screen_pixel_coords 0 0 %d %d' % (SCN_WIDTH, SCN_HEIGHT))
 
 # Open a Pygame window to force openGraphics() to use a
 # non-fullscreen window
-win = pygame.display.set_mode(SCN_WIDTH, SCN_HEIGHT)
+win = pygame.display.set_mode((SCN_WIDTH, SCN_HEIGHT))
 pylink.openGraphics()
 
 # Open an EDF data file on the Host
