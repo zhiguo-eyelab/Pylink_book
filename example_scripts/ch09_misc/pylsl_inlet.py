@@ -1,11 +1,18 @@
+# Filename: pylsl_inlet.py
+# Author: Zhiguo Wang
+# Date: 11/7/2020
+#
+# Description:
+# Receiving data with an LSL inlet
+
 import time
 import pylsl
 
-# look for an EyeLink data stream on the lab network
-print("looking for an Eyelink data stream...")
+# Look for an EyeLink data stream on the network
+print("Looking for an Eyelink data stream...")
 streams = pylsl.resolve_stream('type', 'Gaze')
  
-# create a new inlet to read data from the stream
+# Create a new inlet to read data from the stream
 inlet = pylsl.StreamInlet(streams[0], max_buflen=1)
  
 # Record data for 10 seconds
@@ -15,7 +22,7 @@ sample_time = 0
 while True:
     sample, timestamp = inlet.pull_sample(timeout=0)
  
-    # if a new sample is recieved, print it out
+    # If a new sample is recieved, print it out
     if sample:
         if sample[-2]>sample_time:
             print(sample)
