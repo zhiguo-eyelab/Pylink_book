@@ -1,4 +1,11 @@
 # Filename: minimalist_example.py
+# Author: Zhiguo Wang
+# Date: 11/7/2020
+#
+# Description:
+# A minimalist style script showing how to connect/disconnect to
+# the tracker, open/close EDF data file, configure tracking parameter
+# calibrate the tracker, and start/stop recording
 
 import pylink
 
@@ -19,9 +26,9 @@ tk.doTrackerSetup()
 
 for i in range(5):
     # start recording
-    tk.startRecording(1,1,1,1)
+    tk.startRecording(1, 1, 1, 1)
     # record data for 2 seconds
-    pylink.msecDelay(2000) 
+    pylink.msecDelay(2000)
     # stop recording
     tk.stopRecording()
 
