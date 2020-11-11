@@ -37,3 +37,6 @@ efixFRM = pd.DataFrame(efix, columns=['startT', 'endT', 'duration',
 esacFRM = pd.DataFrame(esac, columns=['startT', 'endT', 'duration',
                                       'startX', 'startY', 'endX',
                                       'endY', 'amplitude', 'peakVel'])
+
+# Close the ASC file
+asc.close()

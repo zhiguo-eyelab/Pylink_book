@@ -43,56 +43,56 @@ tk.sendCommand('validation_area_proportion 0.8 0.8')
 
 # Step 4: open a Pygame window first; then call pylink.openGraphics()
 # to let Pylink use the Pygame window for calibration
-pygame.display.set_mode((SCN_WIDTH, SCN_HEIGHT), DOUBLEBUF|FULLSCREEN)
+pygame.display.set_mode((SCN_WIDTH, SCN_HEIGHT), DOUBLEBUF | FULLSCREEN)
 pylink.openGraphics()
 
 # Step 5: start calibration and switch to the camera setup screen
-tk.doTrackerSetup() 
+tk.doTrackerSetup()
 
 # run through all four trials
 for t in t_pars:
-    # unpacking the picture and correct response key
+    # Unpacking the picture and correct response key
     pic_name, cor_key = t
 
-    # load the picture
+    # Load the picture
     img = pygame.image.load('images/' + pic_name).convert()
 
-    # record_status_message : show some info on the Host PC
-    tk.sendCommand("record_status_message 'Current Picture: %s'"% pic_name)
-    
-    # do drift check and re-calibrate the tracker if ESCAPE is pressed
+    # Record_status_message : show some info on the Host PC
+    tk.sendCommand("record_status_message 'Current Picture: %s'" % pic_name)
+
+    # Do drift check and re-calibrate the tracker if ESCAPE is pressed
     # parameters: x, y, draw_target, allow_setup
     # draw_target (1-default, 0-draw the target then call this function)
-    # allow_setup (1-allow pressing ESCAPE to recalibrate, 0-not allowed) 
+    # allow_setup (1-allow pressing ESCAPE to recalibrate, 0-not allowed)
     tk.doDriftCorrect(int(SCN_WIDTH/2), int(SCN_HEIGHT/2), 1, 1)
-            
-    # start recording
+
+    # Start recording
     # parameters: event_in_file, sample_in_file,
     # event_over_link, sample_over_link (1-yes, 0-no)
-    tk.startRecording(1,1,1,1)
-    # wait for 100 ms to cache some samples
-    pylink.msecDelay(100)  
-    
-    # present the image
+    tk.startRecording(1, 1, 1, 1)
+    # Wait for 100 ms to cache some samples
+    pylink.msecDelay(100)
+
+    # Present the image
     surf = pygame.display.get_surface()
     surf.blit(img, (0, 0))
     pygame.display.flip()
 
-    # log a message to mark image onset
+    # Log a message to mark image onset
     tk.sendMessage('Image_onset')
-    
-    # get key response in a while loop
-    pygame.event.clear() # clear all cached events
+
+    # Wait for a key response in a while loop
+    pygame.event.clear()  # clear all cached events
     got_key = False
     while not got_key:
         for ev in pygame.event.get():
             if ev.type == KEYDOWN:
                 if ev.key in [K_c, K_b]:
+                    tk.sendMessage('key_resp %d' % ev.key)
                     got_key = True
-    
+
     # stop recording
     tk.stopRecording()
-    pylink.pumpDelay(50)
 
 # Step 6: close the EDF data file and download it
 tk.closeDataFile()

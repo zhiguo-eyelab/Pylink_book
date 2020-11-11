@@ -1,40 +1,52 @@
 # Filename: display_demo.py
+# Author: Zhiguo Wang
+# Date: 11/11/2020
+#
+# Description:
+# Open an widnow to assess monitor refresh consistency
 
 import pygame
 from pygame.locals import *
 
-pygame.init() # initialize Pygame modules
+# Initialize Pygame & its modules
+pygame.init()
 
-# open a window
-win = pygame.display.set_mode((1024, 768), DOUBLEBUF|HWSURFACE|FULLSCREEN)
+# Open a window
+win = pygame.display.set_mode((1024, 768), DOUBLEBUF | HWSURFACE | FULLSCREEN)
 
-# create an empty list to save the monitor refresh intervals
+# An empty list to store the monitor refresh intervals
 intv = []
 
-# flip the video buffer to make sure the first timestamp corresponds to a retrace
+# Flip the video buffer, then grab the timestamp of the first retrace
 pygame.display.flip()
 
-# get the timestamp of the 'previous' screen retrace
-t_before_flip = pygame.time.get_ticks() 
+# Get the timestamp of the 'previous' screen retrace
+t_before_flip = pygame.time.get_ticks()
 
-# use a for-loop to flip the video buffer for 100 times 
+# Use a for-loop to flip the video buffer for 200 times
 for i in range(100):
-    # constantly switching the window color between black and white
-    if i%2 == 0:
+    # Switching the window color between black and white
+    if i % 2 == 0:
         win.fill((255, 255, 255))
     else:
-        win.fill((0,0,0))
-    pygame.display.flip() # flip the video buffer
+        win.fill((0, 0, 0))
+    # Flip the video buffer to show the screen
+    pygame.display.flip()
 
-    # get the timestamp of the 'current' screen retrace
+    # Get the timestamp of the 'current' screen retrace
     t_after_flip = pygame.time.get_ticks()
-    flip_intv = t_after_flip - t_before_flip # get the refresh interval
-    intv.append(flip_intv) # save the current refresh interval to a list
-    t_before_flip = t_after_flip # reset the timestamp of the 'previous' retrace
+    # Get the refresh interval
+    flip_intv = t_after_flip - t_before_flip
+    # Store the refresh interval to "intv"
+    intv.append(flip_intv)
+    # Reset the timestamp of the 'previous' retrace
+    t_before_flip = t_after_flip
 
-# print out the max, min and average refresh intervals
-print('Max: {}, Min: {}, Mean: {}'.format(max(intv),
-                                          min(intv),
-                                          sum(intv)*1.0/len(intv)))
-# quit pygame
+# Print out the max, min and average refresh intervals
+intv_max = max(intv)
+intv_min = min(intv)
+intv_avg = sum(intv)*1.0/len(intv)
+print('Max: {}, Min: {}, Mean: {}'.format(intv_max, intv_min, intv_avg))
+
+# Quit Pygame
 pygame.quit()
