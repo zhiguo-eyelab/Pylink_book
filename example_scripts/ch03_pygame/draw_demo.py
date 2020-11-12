@@ -1,38 +1,47 @@
 # Filename: draw_demo.py
+# Author: Zhiguo Wang
+# Date: 11/7/2020
+#
+# Description:
+# A script illustrating the drawing functions in Pygame
 
-import pygame, sys
+import pygame
+import sys
 from pygame.locals import *
 
-pygame.init() # initialize pygame
+# Initialize pygame and open a window
+pygame.init()
 
-# open a window
+# Open a window
 scn = pygame.display.set_mode((640, 480))
 
-# create an empty list to store clicked screen positions
+# An empty list to store clicked screen positions
 points = []
 
 while True:
-    # poll all pygame events
+    # Poll Pygame events
     for ev in pygame.event.get():
-        # quit pygame and Python if the "close" button is clicked
+        # Quit Pygame and Python if the "close window"
+        # button is clicked
         if ev.type == QUIT:
             pygame.quit()
             sys.exit()
-        
-        # append the current mouse position to the list when 
+
+        # Append the current mouse position to the list when
+        # a mouse button down event is detected
         if ev.type == MOUSEBUTTONDOWN:
             points.append(ev.pos)
 
-    # clear the screen
-    scn.fill((255,255,255))
-    
-    # draw a polygon after three mouse clicks    
+    # Clear the screen
+    scn.fill((255, 255, 255))
+
+    # Draw a polygon after three mouse clicks
     if len(points) >= 3:
-        pygame.draw.polygon(scn, (0,255,0), points)
+        pygame.draw.polygon(scn, (0, 255, 0), points)
 
-    # show the screen locations that has been clicked
+    # Highlight the screen locations that has been clicked
     for point in points:
-        pygame.draw.circle(scn, (0,0,255), point, 10)
+        pygame.draw.circle(scn, (0, 0, 255), point, 10)
 
-    # flip the video buffer to show the drawings
+    # Flip the video buffer to show the drawings
     pygame.display.flip()
