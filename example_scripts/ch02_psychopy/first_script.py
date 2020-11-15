@@ -1,23 +1,35 @@
 # Filename: first_script.py
+# Author: Zhiguo Wang
+# Date: 11/7/2020
+#
+# Description:
+# A very short but functioning script in PsychoPy
 
 from psychopy import visual, core, event, monitors
 
-# set monitor parameters
+# Set monitor parameters
 mon_mac15 = monitors.Monitor("mac15", distance=57.0, width=32.0)
-mon_mac15.setSizePix([1920,1080])
+mon_mac15.setSizePix([1920, 1080])
 
-# open a window
-win = visual.Window([800,600], monitor=mon_mac15, units="deg")
+# Open a window
+win = visual.Window([800, 600], monitor=mon_mac15, units="deg")
 
-# prepare the Gabor
+# Prepare a Gabor in memory
 gabor = visual.GratingStim(win, tex="sin", mask="gauss", size=6.0, ori=45.0)
 
-# draw the Gabor on the display and wait for key responses.
+# Draw the Gabor on the display and wait for key responses.
 while True:
-    gabor.phase += 0.1
-    gabor.draw()
-    win.flip()
+    # Break out the loop if a key is pressed
     key = event.getKeys()
-    if len(key)>0: # press any key to quit
+    if len(key) > 0:
         win.close()
         core.quit()
+
+    # Draw the Gabor on screen
+    gabor.draw()
+    win.flip()
+
+    # Update the phase of the Gabor following each screen refresh
+    gabor.phase += 0.1
+
+
