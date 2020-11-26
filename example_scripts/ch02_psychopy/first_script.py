@@ -3,7 +3,7 @@
 # Date: 11/7/2020
 #
 # Description:
-# A very short but functioning script in PsychoPy
+# A short but functioning script in PsychoPy
 
 from psychopy import visual, core, event, monitors
 
@@ -17,7 +17,7 @@ win = visual.Window([800, 600], monitor=mon_mac15, units="deg")
 # Prepare a Gabor in memory
 gabor = visual.GratingStim(win, tex="sin", mask="gauss", size=6.0, ori=45.0)
 
-# Draw the Gabor on the display and wait for key responses.
+# Draw the Gabor on screen and wait for a key press
 while True:
     # Break out the loop if a key is pressed
     key = event.getKeys()
