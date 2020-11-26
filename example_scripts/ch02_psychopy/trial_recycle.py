@@ -1,17 +1,24 @@
 # Filename: trial_recycle.py
+# Author: Zhiguo Wang
+# Date: 11/26/2020
+#
+# Description:
+# This demo shows how to recycle a trial
 
 import random
 from psychopy import visual, event, core
 
-myWin = visual.Window(size=(600,400), units ='pix')
+myWin = visual.Window(size=(600, 400), units='pix')
 
 def run_trial(trial_id):
     """a simple function to run a single trial"""
     
-    # show some info on the screen
-    msg1 = visual.TextStim(myWin, text='This is Trial----{}'.format(trial_id), pos=(0,100))    
-    msg2 = visual.TextStim(myWin, text='RIGHT--> Next trial; LEFT--> Recycle current trial')
-    msg1.draw(); msg2.draw()
+    # Show some info on the screen
+    task_instruction = 'This is Trial: {}\n\n'.format(trial_id) + \
+                       'RIGHT--> Next trial\n' + \
+                       'LEFT--> Recycle current trial'
+    msg = visual.TextStim(myWin, text=task_instruction)
+    msg.draw()
     myWin.flip()
     
     # wait for a response
@@ -23,15 +30,13 @@ def run_trial(trial_id):
     core.wait(0.5)
 
     if 'right' in key: 
-        recycle = False
+        return False
     if 'left' in key:
-        recycle = True
-        
-    return recycle
+        return True
     
 trial_list = ['t1', 't2', 't3', 't4', 't5']
 
-# recycle trials with a while loop
+# Recycle trials with a while loop
 while len(trial_list) > 0: 
     
     # randomly select a trial from the trial_list
@@ -48,5 +53,6 @@ while len(trial_list) > 0:
     # show what trials are left in the trial list
     print('Trials left in the list: {}'.format(trial_list))
 
-# quit psychopy
+# Quit psychopy
+win.close()
 core.quit()

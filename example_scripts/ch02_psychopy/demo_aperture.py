@@ -11,7 +11,7 @@ from psychopy import visual, core, event
 win = visual.Window(size=(800, 600), units="pix", fullscr=False,
                     color=[0, 0, 0], allowStencil=True)
 
-# Create an aperture of arbitray shape
+# Create an aperture of arbitrary shape
 vert = [(0.1, .50), (.45, .20), (.10, -.5), (-.60, -.5), (-.5, .20)]
 apt = visual.Aperture(win, size=200, shape=vert, inverted=True)
 apt.enabled = True
