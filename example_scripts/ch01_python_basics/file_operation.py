@@ -1,6 +1,8 @@
+#! /usr/bin/env python3
+#
 # Filename: file_operation.py
 # Author: Zhiguo Wang
-# Date: 11/26/2020
+# Date: 2/3/2020
 #
 # Description:
 # Open, read, and write plain text files
@@ -44,4 +46,4 @@ file.close()
 print('\n\nRead all lines using a with-statement')
 with open('file_op.txt', 'r') as file:
     for line in file:
-        print(line)
+        print(line.rstrip())
