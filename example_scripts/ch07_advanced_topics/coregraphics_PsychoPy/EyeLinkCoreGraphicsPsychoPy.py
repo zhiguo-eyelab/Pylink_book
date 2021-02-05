@@ -19,7 +19,7 @@ from psychopy.sound import Sound
 
 class EyeLinkCoreGraphicsPsychoPy(pylink.EyeLinkCustomDisplay):
     def __init__(self, tracker, win):
-        '''Initialize an EyeLinkCustomDisplay instance
+        '''Initialize
 
         tracker: an EyeLink instance (connection)
         win: the PsychoPy window we use for calibration'''
