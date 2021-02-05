@@ -13,6 +13,9 @@ from PIL import Image
 # Connect to the tracker
 tk = pylink.EyeLink('100.1.1.1')
 
+# Pass display dimension (left, top, right, bottom) to the tracker
+tk.sendCommand('screen_pixel_coords = 0 0 1023 767')
+
 # Put the tracker in offline mode before we transfer the image
 tk.setOfflineMode()
 
