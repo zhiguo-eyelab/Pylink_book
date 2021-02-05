@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+#
 # Filename: image_backdrop.py
 # Author: Zhiguo Wang
-# Date: 11/7/2020
+# Date: 2/5/2020
 #
 # Description:
 # Transfer an image to the Host to use as the backdrop
@@ -47,11 +49,9 @@ pixels_hex = [
 
 # Transfer the images to the Host PC screen
 tk.sendCommand('clear_screen 0')
-# tk.bitmapBackdrop(w, h, pixels_img, 0, 0, w, h,
-#                  0, 0, pylink.BX_MAXCONTRAST)
-tk.bitmapSaveAndBackdrop(w, h, pixels_img, 0, 0, w, h,
-                         'trial_image', 'img', pylink.SV_MAKEPATH,
-                         0, 0, pylink.BX_MAXCONTRAST)
+tk.bitmapBackdrop(w, h, pixels_img, 0, 0, w, h,
+
+                  0, 0, pylink.BX_MAXCONTRAST)
 
 # Show the image for 1-sec on the Host PC
 pylink.msecDelay(3000)
@@ -60,22 +60,18 @@ pylink.msecDelay(3000)
 # show it at (200,0) for 3-sec
 tk.sendCommand('clear_screen 0')
 tk.sendCommand('echo PIXELs_IN_HEX')
-# tk.bitmapBackdrop(6, 6, pixels_hex, 0, 0, 6, 6,
-#                  0, 0, pylink.BX_MAXCONTRAST)
-tk.bitmapSaveAndBackdrop(6, 600, pixels_hex, 0, 0, 6, 600,
-                         'trial_image', 'img', pylink.SV_MAKEPATH,
-                         150, 0, pylink.BX_MAXCONTRAST)
+tk.bitmapBackdrop(6, 6, pixels_hex, 0, 0, 6, 6,
+                  0, 0, pylink.BX_MAXCONTRAST)
+
 pylink.msecDelay(3000)
 
 # Transfer the checkerboard constructed with RGB tuples to the Host
 # show it at (200, 0) for 3 sec
 tk.sendCommand('clear_screen 0')
 tk.sendCommand('echo PIXELs_IN_RGB')
-# tk.bitmapBackdrop(6, 600, pixels_rgb, 0, 0, 6, 600,
-#                  200, 0, pylink.BX_MAXCONTRAST)
-tk.bitmapSaveAndBackdrop(6, 600, pixels_rgb, 0, 0, 6, 600,
-                         'trial_image', 'img', pylink.SV_MAKEPATH,
-                         200, 0, pylink.BX_MAXCONTRAST)
+tk.bitmapBackdrop(6, 600, pixels_rgb, 0, 0, 6, 600,
+                  200, 0, pylink.BX_MAXCONTRAST)
+
 pylink.msecDelay(3000)
 
 # Clear up the Host screen
