@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Filename: image_backdrop.py
+# Filename: bitmap_backdrop.py
 # Author: Zhiguo Wang
 # Date: 2/5/2020
 #
@@ -18,7 +18,7 @@ tk.setOfflineMode()
 
 # convert the image to the <pixel> format supported by
 # the bitmapBackdrop() command
-im = Image.open('sacrmeto.bmp')  # open an image with PIL
+im = Image.open('teafarm.bmp')  # open an image with PIL
 w, h = im.size  # get the width and height of an image
 pixels = im.load()  # access the pixel data
 # reformat the pixels 
