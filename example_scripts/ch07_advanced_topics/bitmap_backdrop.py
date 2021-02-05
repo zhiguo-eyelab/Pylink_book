@@ -18,7 +18,7 @@ tk.setOfflineMode()
 
 # convert the image to the <pixel> format supported by
 # the bitmapBackdrop() command
-im = Image.open('teafarm.bmp')  # open an image with PIL
+im = Image.open('quebec.jpeg')  # open an image with PIL
 w, h = im.size  # get the width and height of an image
 pixels = im.load()  # access the pixel data
 # reformat the pixels 
