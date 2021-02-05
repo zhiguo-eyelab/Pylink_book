@@ -15,26 +15,14 @@ tk = pylink.EyeLink('100.1.1.1')
 
 # Open a PsychoPy window
 SCN_WIDTH, SCN_HEIGHT = (1024, 768)
+
 # Be sure to explicitly set monitor parameters
 mon = monitors.Monitor('myMac15', width=53.0, distance=70.0)
-mon.setSizePix((SCN_WIDTH, SCN_HEIGHT))
 win = visual.Window((SCN_WIDTH, SCN_HEIGHT), fullscr=False,
                     monitor=mon, units='pix')
 
 # instantiate a custom CoreGraphics environment in PsychoPy
 genv = EyeLinkCoreGraphicsPsychoPy(tk, win)
-
-# Configure the calibration target
-# To use a dynamic spiral as the calibration target; otherwise,
-# calTarget could be a "circle", a "picture", or a "movie" clip.
-# To use a picture or movie clip as the calibration target,
-# you need to provide movieTargetFile or pictureTargetFile
-genv.calTarget = 'spiral'
-# provide a movie clip if genv.calTarget = 'movie'
-# genv.movieTargetFile = 'starjumps100.avi'
-genv.targetSize = 32
-
-# Open the calibration window
 pylink.openGraphicsEx(genv)
 
 # Set up the camera and calibrate the tracker
