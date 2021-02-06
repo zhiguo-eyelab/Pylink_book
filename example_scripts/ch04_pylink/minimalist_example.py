@@ -1,10 +1,12 @@
+#!/usr/bin/env python3
+#
 # Filename: minimalist_example.py
 # Author: Zhiguo Wang
-# Date: 11/7/2020
+# Date: 2/6/2021
 #
 # Description:
-# A minimalist style script showing how to connect/disconnect to
-# the tracker, open/close EDF data file, configure tracking parameter
+# A minimalist style script showing how to connect/disconnect
+# the tracker, open/close EDF data file, configure tracking parameter,
 # calibrate the tracker, and start/stop recording
 
 import pylink
@@ -18,7 +20,7 @@ tk.openDataFile('test.edf')
 # Step 3: set some tracking parameters
 tk.sendCommand("sample_rate 1000")
 
-# Step 4: open calibration window
+# Step 4: open a calibration window
 pylink.openGraphics()
 
 # Step 5: calibrate the tracker, then run five trials
