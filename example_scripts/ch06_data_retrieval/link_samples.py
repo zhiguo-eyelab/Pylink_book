@@ -1,35 +1,50 @@
-# Filename:retrieve_samples.py
+#!/usr/bin/env python3
+#
+# Filename: link_samples.py
 # Author: Zhiguo Wang
-# Date: 11/7/2020
+# Date: 2/6/2021
 #
 # Description:
-# A short script illustrating online retrieval of samples
+# A short script illustrating online retrieval of sample data
 
 import pylink
 
-# Connect to the tracker and open an EDF
+# Connect to the tracker
 tk = pylink.EyeLink('100.1.1.1')
+
+# Open an EDF data file on the Host PC
 tk.openDataFile('smp_test.edf')
 
-# Open a SDL window to calibrate the tracker
-pylink.openGraphics()
-tk.doTrackerSetup()
-pylink.closeGraphics()
+# Put the tracker in offline mode before we change tracking parameters
+tk.setOfflineMode()
 
-tk.sendCommand('sample_rate 1000')  # set sample rate to 1000 Hz
+# Set sample rate to 1000 Hz
+tk.sendCommand('sample_rate 1000')
 
 # Make gaze, HREF, and raw (PUPIL) data available over the link
 sample_flag = 'LEFT,RIGHT,GAZE,GAZERES,PUPIL,HREF,AREA,STATUS,INPUT'
 tk.sendCommand('link_sample_data = %s' % sample_flags)
 
+# Open an SDL window for calibration
+pylink.openGraphics()
+
+# Set up the camera and calibrate the tracker
+tk.doTrackerSetup()
+
+# Put tracker in idle/offline mode before we start recording
+el_tracker.setOfflineMode()
+
 # Start recording
 error = tk.startRecording(1, 1, 1, 1)
-pylink.msecDelay(100)  # cache some samples for event parsing
+
+# Cache some samples for event parsing
+pylink.msecDelay(100)
 
 # Open a plain text file to store the retrieved sample data
 text_file = open('sample_data.csv', 'w')
 
-t_start = tk.trackerTime()  # current tracker time
+# Current tracker time
+t_start = tk.trackerTime()  
 smp_time = -1
 while True:
     # Break after 5 seconds have elapsed
@@ -52,6 +67,7 @@ while True:
             pupil = dt.getLeftEye().getPupilSize()
 
         timestamp = dt.getTime()
+        
         # Put gaze, HREF, raw, & pupil data to the plain text
         # file if the sample is new
         if timestamp > smp_time:
@@ -59,7 +75,20 @@ while True:
             text_file.write('\t'.join(smp) + '\n')
             smp_time = timestamp
 
-tk.stopRecording()  # stop recording
-tk.closeDataFile()  # close the EDF data file on the Host
-text_file.close()  # close the plain text file
-tk.close()  # close the link to the tracker
+# Stop recording
+tk.stopRecording()
+
+# Close the plain text file
+text_file.close()  
+
+# Close the EDF data file on the Host
+tk.closeDataFile()
+
+# Download the EDF data file from Host
+tk.receiveDataFile('smp_test.edf', 'smp_test.edf')
+
+# Close the link to the tracker
+tk.close()
+
+# Close the window
+pylink.closeGraphics()

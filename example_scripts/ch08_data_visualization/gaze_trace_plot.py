@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+#
 # Filename: gaze_trace_plot.py
 # Author: Zhiguo Wang
 # Date: 11/11/2020

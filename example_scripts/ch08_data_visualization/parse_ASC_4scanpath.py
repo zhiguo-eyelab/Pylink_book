@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+#
 # Filename: parse_ASC_4scanpath.py
 # Author: Zhiguo Wang
 # Date: 11/11/2020
