@@ -7,7 +7,6 @@
 # Description:
 # A short script illustrating online retrieval of eye events
 
-
 import pylink
 
 # Connect to the tracker
@@ -33,7 +32,7 @@ pylink.openGraphics()
 tk.doTrackerSetup()
 
 # Put tracker in idle/offline mode before we start recording
-el_tracker.setOfflineMode()
+tk.setOfflineMode()
 
 # Start recording
 error = tk.startRecording(1, 1, 1, 1)

@@ -28,10 +28,14 @@ event_flags = 'LEFT,RIGHT,FIXATION,FIXUPDATE,SACCADE,BLINK,BUTTON,INPUT'
 tk.sendCommand('link_event_filter = {}'.format(event_flags))
 
 # Screen resolution
-SCN_WIDTH, SCN_HEIGHT = (800, 600)
+SCN_W, SCN_H = (1280, 800)
 
 # Open a PsyhocPy window
-win = visual.Window((SCN_WIDTH, SCN_HEIGHT), fullscr=False, units='pix')
+win = visual.Window((SCN_W, SCN_H), fullscr=False, units='pix')
+
+# Pass the display pixel coordinates (left, top, right, bottom) to the tracker
+coords = "screen_pixel_coords = 0 0 {} {}".format(SCN_W - 1, SCN_H - 1)
+tk.sendCommand(coords)
 
 # Request Pylink to use the custom EyeLinkCoreGraphicsPsychoPy library
 # to draw calibration graphics (target, camera image, etc.)
@@ -69,7 +73,7 @@ for i in range(3):
 
     # Gaze trigger
     # wait for gaze on the fixation dot (for a minimum of 300 ms)
-    fix_dot_x, fix_dot_y = (SCN_WIDTH/2.0, SCN_HEIGHT/2.0)
+    fix_dot_x, fix_dot_y = (SCN_W/2.0, SCN_H/2.0)
     triggered = False
     fixation_start_time = -32768
     while not triggered:
@@ -122,4 +126,5 @@ tk.receiveDataFile('psychopy.edf', 'psychopy.edf')
 tk.close()
 
 # Close the graphics
+win.close()
 core.quit()

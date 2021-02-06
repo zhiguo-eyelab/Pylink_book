@@ -32,7 +32,7 @@ pylink.openGraphics()
 tk.doTrackerSetup()
 
 # Put tracker in idle/offline mode before we start recording
-el_tracker.setOfflineMode()
+tk.setOfflineMode()
 
 # Start recording
 error = tk.startRecording(1, 1, 1, 1)
@@ -55,13 +55,13 @@ while True:
         # in the message to examine the link delay
         ev = tk.getFloatData()
         if dt == pylink.STARTSACC:
-            tk.sendMessage('STARTSACC %d' % ev.getTime())
+            tk.sendMessage('STARTSACC {}'.format(ev.getTime()))
         if dt == pylink.ENDSACC:
-            tk.sendMessage('ENDSACC %d' % ev.getTime())
+            tk.sendMessage('ENDSACC {}'.format(ev.getTime()))
         if dt == pylink.STARTFIX:
-            tk.sendMessage('STARTFIX %d' % ev.getTime())
+            tk.sendMessage('STARTFIX {}'.format(ev.getTime()))
         if dt == pylink.ENDFIX:
-            tk.sendMessage('ENDFIX %d' % ev.getTime())
+            tk.sendMessage('ENDFIX {}'.format(ev.getTime()))
 
 # Stop recording
 tk.stopRecording()

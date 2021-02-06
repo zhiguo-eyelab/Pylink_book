@@ -25,11 +25,15 @@ sample_flags = 'LEFT,RIGHT,GAZE,GAZERES,PUPIL,HREF,AREA,STATUS,INPUT'
 tk.sendCommand('link_sample_data  = {}'.format(sample_flags))
 
 # Screen resolution
-SCN_WIDTH, SCN_HEIGHT = (800, 600)
+SCN_W, SCN_H = (1280, 800)
 
 # Open a PsyhocPy window with the "allowStencil" option
-win = visual.Window((SCN_WIDTH, SCN_HEIGHT), fullscr=False,
+win = visual.Window((SCN_W, SCN_H), fullscr=False,
                     units='pix', allowStencil=True)
+
+# Pass the display pixel coordinates (left, top, right, bottom) to the tracker
+coords = "screen_pixel_coords = 0 0 {} {}".format(SCN_W - 1, SCN_H - 1)
+tk.sendCommand(coords)
 
 # Request Pylink to use the custom EyeLinkCoreGraphicsPsychoPy library
 # to draw calibration graphics (target, camera image, etc.)
@@ -47,8 +51,7 @@ gaze_window = visual.Aperture(win, shape='square', size=200)
 gaze_window.enabled = True
 
 # Load a background image to fill up the screen
-img = visual.ImageStim(win, image='woods.jpg',
-                       size=(SCN_WIDTH, SCN_HEIGHT))
+img = visual.ImageStim(win, image='woods.jpg', size=(SCN_W, SCN_H))
 
 # Put tracker in Offline mode before we start recording
 tk.setOfflineMode()
@@ -74,7 +77,7 @@ while not event.getKeys():
         img.draw()
         
         # Update the window with the current gaze position
-        gaze_window.pos = (gaze_x - SCN_WIDTH/2.0, SCN_HEIGHT/2.0 - gaze_y)
+        gaze_window.pos = (gaze_x - SCN_W/2.0, SCN_H/2.0 - gaze_y)
         win.flip()
 
 # Stop recording
@@ -90,5 +93,6 @@ tk.receiveDataFile('psychopy.edf', 'psychopy.edf')
 tk.close()
 
 # Close the graphics
+win.close()
 core.quit()
 

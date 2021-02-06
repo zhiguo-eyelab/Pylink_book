@@ -23,7 +23,7 @@ tk.sendCommand('sample_rate 1000')
 
 # Make gaze, HREF, and raw (PUPIL) data available over the link
 sample_flag = 'LEFT,RIGHT,GAZE,GAZERES,PUPIL,HREF,AREA,STATUS,INPUT'
-tk.sendCommand('link_sample_data = %s' % sample_flags)
+tk.sendCommand('link_sample_data = {}'.format(sample_flag))
 
 # Open an SDL window for calibration
 pylink.openGraphics()
@@ -32,7 +32,7 @@ pylink.openGraphics()
 tk.doTrackerSetup()
 
 # Put tracker in idle/offline mode before we start recording
-el_tracker.setOfflineMode()
+tk.setOfflineMode()
 
 # Start recording
 error = tk.startRecording(1, 1, 1, 1)
@@ -68,8 +68,8 @@ while True:
 
         timestamp = dt.getTime()
         
-        # Put gaze, HREF, raw, & pupil data to the plain text
-        # file if the sample is new
+        # Save gaze, HREF, raw, & pupil data to the plain text
+        # file, if the sample is new
         if timestamp > smp_time:
             smp = map(str, [timestamp, gaze, href, raw, pupil])
             text_file.write('\t'.join(smp) + '\n')
