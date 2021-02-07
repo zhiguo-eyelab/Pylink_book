@@ -1,6 +1,8 @@
+#!/usr/bin/env python
+#
 # Filename: Stroop_task.py
 # Author: Zhiguo Wang
-# Date: 11/7/2020
+# Date: 2/6/2021
 #
 # Description:
 # A Stroop task implemented in PsychoPy
@@ -12,7 +14,7 @@ from psychopy import visual, core, event, monitors
 from EyeLinkCoreGraphicsPsychoPy import EyeLinkCoreGraphicsPsychoPy
 
 # Monitor resolution
-SCN_WIDTH, SCN_HEIGHT = (1280, 800)
+SCN_W, SCN_H = (1280, 800)
 
 # Step 1: Connect to the tracker
 tk = pylink.EyeLink('100.1.1.1')
@@ -22,51 +24,48 @@ tk.openDataFile('stroop.edf')
 # Add preamble text (file header)
 tk.sendCommand("add_file_preamble_text 'Stroop task demo'")
 
-# Step 3: Setup Host parameters
+# Step 3: Set up tracking parameters
+#
 # put the tracker in idle mode before we change its parameters
 tk.setOfflineMode()
-pylink.msecDelay(50)
 
-# Sample rate, 250, 500, 1000, or 2000
-# this command does not support EyeLInk II/I
+# Sample rate, 250, 500, 1000, or 2000 (does not support EyeLInk II/I)
 tk.sendCommand('sample_rate 500')
 
-# Send the resolution of the monitor to the tracker
-tk.sendCommand("screen_pixel_coords = 0 0 %d %d" % (SCN_WIDTH-1, SCN_HEIGHT-1))
+# Pass screen resolution  to the tracker
+tk.sendCommand("screen_pixel_coords = 0 0 {} {}".format(SCN_W-1, SCN_H-1))
 
-# Save monitor resolution in EDF data file,
-# so Data Viewer can correctly load background graphics
-tk.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (SCN_WIDTH-1, SCN_HEIGHT-1))
+# Send a DISPLAY_COORDS message so Data Viewer knows the correct screen size
+tk.sendMessage("DISPLAY_COORDS = 0 0 {} {}".format(SCN_W-1, SCN_H-1))
 
 # Choose a calibration type, H3, HV3, HV5, HV13 (HV = horizontal/vertical)
 tk.sendCommand("calibration_type = HV9")
 
 # Step 4: # open a window for graphics and calibration
-# Always create a monitor object before you run the script
+#
+# Create a monitor object to store monitor information
 customMon = monitors.Monitor('demoMon', width=35, distance=65)
-customMon.setSizePix((SCN_WIDTH, SCN_HEIGHT))
 
-# Open a window
-win = visual.Window((SCN_WIDTH, SCN_HEIGHT), fullscr=False,
-                    monitor=customMon, units='pix', allowStencil=True)
+# Open a PsychoPy window
+win = visual.Window((SCN_W, SCN_H), fullscr=False,
+                    monitor=customMon, units='pix')
 
 # Request Pylink to use the PsychoPy window for calibration
 graphics = EyeLinkCoreGraphicsPsychoPy(tk, win)
 pylink.openGraphicsEx(graphics)
 
 # Step 5: calibrate the tracker, and run through all the trials
-calib_prompt = "LEFT to RED\n\nRIGHT to BLEU\n\nPress ENTER twice to calibrate"
-calib_msg = visual.TextStim(win, text=calib_prompt, color='white', units='pix')
+calib_prompt = "LEFT to RED\n\nRIGHT to BLEU\n\nPress ENTER to calibrate"
+calib_msg = visual.TextStim(win, text=calib_prompt, color='white')
 calib_msg.draw()
 win.flip()
-event.waitKeys()
 
 # Calibrate the tracker
 tk.doTrackerSetup()
 
 # Step 6: Run through all the trials
-# specify all possible experimental trials
-# the columns are 'text', 'text_color', 'correct_answer' and "congruency"
+# specify all possible experimental trials the columns are
+# 'text', 'text_color', 'correct_answer' and "congruency"
 my_trials = [
     ['red',   'red',  'left',  'cong'],
     ['red',   'blue', 'right', 'incg'],
@@ -75,8 +74,8 @@ my_trials = [
     ]
 
 
-# For convenience, here we define a run_trial function to group the lines
-# of code executed in each trial
+# For convenience, define a run_trial function to group
+# the lines of code executed in each trial
 def run_trial(params):
     """ Run a single trial
 
@@ -92,25 +91,28 @@ def run_trial(params):
 
     # Take the tracker offline
     tk.setOfflineMode()
-    pylink.msecDelay(50)
 
     # Send a "TRIALID" message to mark the start of a trial
-    tk.sendMessage("TRIALID %s %s %s" % (text, text_color, congruency))
+    tk.sendMessage("TRIALID {} {} {}".format(text, text_color, congruency))
 
     # Record_status_message : show some info on the Host PC
-    msg = "record_status_message 'word: %s, color: %s'" % (text, text_color)
+    msg = "record_status_message 'Congruency-{}'".format(congruency)
     tk.sendCommand(msg)
 
     # Drift check/correction, params, x, y, draw_target, allow_setup
     try:
-        tk.doDriftCorrect(int(SCN_WIDTH/2), int(SCN_HEIGHT/2), 1, 1)
+        tk.doDriftCorrect(int(SCN_W/2), int(SCN_H/2), 1, 1)
     except:
         tk.doTrackerSetup()
 
-    # Start recording; params: sample_in_file, event_in_file,
-    # sampe_over_link, event_over_link (1-yes, 0-no)
+    # Put the tracker in idle mode before we start recording
+    tk.setOfflineMode()
+    
+    # Start recording
+    # params: file_sample, file_event, link_sampe, link_event (1-yes, 0-no)
     tk.startRecording(1, 1, 1, 1)
-    # wait for 100 ms to cache some samples
+
+    # Wait for 100 ms to cache some samples
     pylink.msecDelay(100)
 
     # Draw the target word on the screen
@@ -124,17 +126,17 @@ def run_trial(params):
     # Save a screenshot to use as background graphics in Data Viewer
     if not os.path.exists('screenshots'):
         os.mkdir('screenshots')
-    screenshot = 'screenshots/cond_%s_%s.jpg' % (text, text_color)
+    screenshot = 'screenshots/cond_{}_{}.jpg'.format(text, text_color)
     win.getMovieFrame()
     win.saveMovieFrames(screenshot)
 
-    # The command we used to take screenshots take time to return;
+    # The command we used to take screenshots takes time to return
     # we need to provide a "time offset" in the IMGLOAD message, so
     # Data Viewer knows the correct onset time of the screen
-    msg_offset = int((core.getTime()-tar_onset)*1000)
+    msg_offset = int((core.getTime() - tar_onset) * 1000)
     # Send an IMGLOAD message to let DV know which screenshot to load
-    path_to_scnshot = '..' + os.sep + screenshot
-    tk.sendMessage('%d !V IMGLOAD FILL %s' % (msg_offset, path_to_scnshot))
+    scnshot = os.path.join('..', screenshot)
+    tk.sendMessage('{} !V IMGLOAD FILL {}'.format(msg_offset, scnshot))
 
     # Clear bufferred events (in PsychoPy), then wait for key presses
     event.clearEvents(eventType='keyboard')
@@ -152,10 +154,11 @@ def run_trial(params):
             if key_pressed == 'escape':
                 tk.stopRecording()
                 tk.close()
+                win.close()
                 core.quit()
 
             # Send a message mark the key response
-            tk.sendMessage("Key_resp %s" % key_pressed)
+            tk.sendMessage("Key_resp {}".format(key_pressed))
             gotKey = True
 
     # Clear the window at the end of a trials2Test
@@ -166,15 +169,15 @@ def run_trial(params):
     tk.stopRecording()
 
     # Send trial variables to record in the EDF data file
-    tk.sendMessage("!V TRIAL_VAR word %s" % text)
-    tk.sendMessage("!V TRIAL_VAR color %s" % text_color)
-    tk.sendMessage("!V TRIAL_VAR congruency %s" % congruency)
-    tk.sendMessage("!V TRIAL_VAR key_pressed %s" % key_pressed)
-    tk.sendMessage("!V TRIAL_VAR RT %d" % RT)
-    tk.sendMessage("!V TRIAL_VAR ACC %d" % ACC)
+    tk.sendMessage("!V TRIAL_VAR word {}".format(text))
+    tk.sendMessage("!V TRIAL_VAR color {}".format(text_color))
+    tk.sendMessage("!V TRIAL_VAR congruency {}".format(congruency))
+    tk.sendMessage("!V TRIAL_VAR key_pressed {}".format(key_pressed))
+    tk.sendMessage("!V TRIAL_VAR RT {}".format(round(RT * 1000)))
+    tk.sendMessage("!V TRIAL_VAR ACC {}".format(ACC))
 
     # Send a 'TRIAL_RESULT' message to mark the end of trial
-    tk.sendMessage("TRIAL_RESULT %d" % ACC)
+    tk.sendMessage("TRIAL_RESULT {}".format(ACC))
 
 # Run a block of 8 trials, in random order
 trials_to_test = my_trials[:]*2
@@ -183,9 +186,8 @@ for trial in trials_to_test:
     run_trial(trial)
 
 # Step 7: Close the EDF data file and put the tracker in idle mode
+pylink.pumpDelay(100)  # wait for 100 ms to catch session end events
 tk.closeDataFile()
-tk.setOfflineMode()
-pylink.pumpDelay(100)
 
 # Step 8: Downlad EDF file to a local folder ('edfData')
 msg = 'Downloading EDF file from the EyeLink Host PC ...'
@@ -199,4 +201,5 @@ tk.receiveDataFile('stroop.edf', 'edfData/stroop_demo.edf')
 
 # Step 9: Close the connection to tracker, close graphics
 tk.close()
+win.close()
 core.quit()

@@ -8,6 +8,8 @@
 # An EyeLink coregraphics library (calibration routine)
 # for PsychoPy experiments.
 
+import os
+import platform
 import array
 import string
 import pylink
@@ -37,6 +39,14 @@ class EyeLinkCoreGraphicsPsychoPy(pylink.EyeLinkCustomDisplay):
 
         # display width & height
         self._w, self._h = win.size
+
+        # resolution fix for Mac retina displays
+        if 'Darwin' in platform.system():
+            sys_cmd = 'system_profiler SPDisplaysDataType | grep Retina'
+            is_ret = os.system(sys_cmd)
+            if is_ret == 0:
+                self._w = int(self._w / 2.0)
+                self._h = int(self._h / 2.0)
 
         # store camera image pixels in an array
         self._imagebuffer = array.array('I')

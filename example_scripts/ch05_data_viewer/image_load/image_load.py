@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #
-# Filename: simple_drawing.py
+# Filename: image_load.py
 # Author: Zhiguo Wang
 # Date: 2/6/2021
 #
 # Description:
-# This script illustrates the various drawing commands
-# supported by Data Viewer
+# This script illustrates the IAREA messages
+# that Data Viewer uses to reconstruct interest areas
 
 import pylink
 
@@ -14,7 +14,7 @@ import pylink
 tk = pylink.EyeLink()
 
 # Open an EDF on the Host; filename must not exceed 8 characters
-tk.openDataFile('drawing.edf')
+tk.openDataFile('imgload.edf')
 
 # Assume the screen resolution is 1024 x 768 pixels
 SCN_W, SCN_H = (1024, 768)
@@ -38,14 +38,10 @@ for trial in range(1, 6):
     # Start recording
     tk.startRecording(1, 1, 1, 1)
 
-    # Clear the screen to show a white background
-    tk.sendMessage('!V CLEAR 255 255 255')
-    # Draw a central fixation dot
-    tk.sendMessage('!V FIXPOINT 0 0 0 0 0 0 512 384 25 0')
-    # Draw the non-target
-    tk.sendMessage('!V FIXPOINT 0 0 0 255 255 255 312 384 80 75')
-    # Draw the target
-    tk.sendMessage('!V FIXPOINT 255 0 0 255 0 0 712 384 80 0')
+    # Assuming an image is presented in the task and we would like
+    # to have the same image in the background when visualizing data
+    # in Data Viewer
+    tk.sendMessage('!V IMGLOAD FILL {}'.format('woods.jpg'))
 
     # Pretending that we are doing something for 2-sec
     pylink.pumpDelay(2000)
@@ -61,7 +57,7 @@ pylink.msecDelay(100)
 
 # Close the EDF file and download it from the Host PC
 tk.closeDataFile()
-tk.receiveDataFile('drawing.edf', 'drawing_demo.edf')
+tk.receiveDataFile('imgload.edf', 'imgload_demo.edf')
 
 # Close the link
 tk.close()

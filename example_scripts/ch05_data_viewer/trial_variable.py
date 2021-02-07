@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+#
 # Filename: trial_variable.py
 # Author: Zhiguo Wang
-# Date: 11/7/2020
+# Date: 2/6/2021
 #
 # Description:
 # This script illustrates the TRIAL_VAR messages
@@ -17,10 +19,10 @@ tk.openDataFile('vars.edf')
 # Run through five trials
 for trial in range(1, 6):
     # Print out a message to show the current trial
-    print("Trial #: %d" % trial)
+    print("Trial #: {}".format(trial))
 
     # Log a TRIALID message to mark trial start
-    tk.sendMessage('TRIALID %d' % trial)
+    tk.sendMessage('TRIALID {}'.format(trial))
 
     # Start recording
     tk.startRecording(1, 1, 1, 1)
@@ -39,8 +41,10 @@ for trial in range(1, 6):
     # Log a TRIAL_RESULT message to mark trial ends
     tk.sendMessage('TRIAL_RESULT 0')
 
+# Wait for 100 to catch session end events
+pylink.msecDelay(100)  
+
 # Close the EDF file and download it from the Host PC
-pylink.msecDelay(100)  # wait for 100 to catch session end events
 tk.closeDataFile()
 tk.receiveDataFile('vars.edf', 'trial_variable_demo.edf')
 
