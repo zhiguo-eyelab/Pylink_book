@@ -34,10 +34,10 @@ tk.setOfflineMode()
 tk.sendCommand('sample_rate 500')
 
 # Pass screen resolution  to the tracker
-tk.sendCommand("screen_pixel_coords = 0 0 {SCN_W-1} {SCN_H-1}")
+tk.sendCommand(f"screen_pixel_coords = 0 0 {SCN_W-1} {SCN_H-1}")
 
 # Send a DISPLAY_COORDS message so Data Viewer knows the correct screen size
-tk.sendMessage("DISPLAY_COORDS = 0 0 {SCN_W-1} {SCN_H-1}")
+tk.sendMessage(f"DISPLAY_COORDS = 0 0 {SCN_W-1} {SCN_H-1}")
 
 # Choose a calibration type, H3, HV3, HV5, HV13 (HV = horizontal/vertical)
 tk.sendCommand("calibration_type = HV9")
@@ -86,10 +86,10 @@ def run_trial(pars):
     tk.setOfflineMode()
 
     # Send the standard "TRIALID" message to mark the start of a trial
-    tk.sendMessage("TRIALID {trial_num} {movie_file}")
+    tk.sendMessage(f"TRIALID {trial_num} {movie_file}")
 
     # Record_status_message : show some info on the Host PC
-    msg = "record_status_message 'Movie File: {movie_file}'"
+    msg = f"record_status_message 'Movie File: {movie_file}'"
     tk.sendCommand(msg)
 
     # Drift check/correction, params, x, y, draw_target, allow_setup
@@ -128,7 +128,7 @@ def run_trial(pars):
             x = int(SCN_W/2 - mo_width/2)
             y = int(SCN_H/2 - mo_height/2)
             path_to_movie = os.path.join('..', movie_file)
-            msg = "!V VFRAME {frame_n} {x} {y} {path_to_movie}"
+            msg = f"!V VFRAME {frame_n} {x} {y} {path_to_movie}"
             tk.sendMessage(msg)
             prev_frame_timestamp = current_frame_timestamp
 

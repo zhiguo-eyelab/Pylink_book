@@ -36,7 +36,7 @@ for line in asc:
         fixations = []
         # Store all fixation durations in a list
         fix_duration = []
-        print('Processing trial # %d ...' % trial_number)
+        print(f'Processing trial # {trial_number} ...')
 
     if trial_start:
         # Get background image from the .VCL file
@@ -65,6 +65,7 @@ for line in asc:
     # Message marking image offset
     if 'blank_screen' in line:
         bg = Image.open(edf_dir + bg_image)
+        bg = bg.resize((scn_w, scn_h))
         draw = ImageDraw.Draw(bg)
         # Draw the scan path
         draw.line(fixations, fill=(0, 0, 255), width=3)
@@ -74,7 +75,7 @@ for line in asc:
             gx, gy = fixations[i]
             draw.ellipse([(gx-sz, gy-sz), (gx+sz, gy+sz)], fill=(0, 0, 255))
         # Save the scanpath for each trial
-        bg.save('trial_%d.png' % trial_number, 'PNG')
+        bg.save(f'trial_{trial_number}.png', 'PNG')
 
 # Close the ASC file
 asc.close()

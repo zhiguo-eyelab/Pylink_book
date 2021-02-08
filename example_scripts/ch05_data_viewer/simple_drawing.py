@@ -20,7 +20,7 @@ tk.openDataFile('drawing.edf')
 SCN_W, SCN_H = (1024, 768)
 
 # Pass the screen coordinates to the tracker
-coords = 'screen_pixel_coords = 0 0 {SCN_W - 1} {SCN_H - 1}'
+coords = f'screen_pixel_coords = 0 0 {SCN_W - 1} {SCN_H - 1}'
 tk.sendCommand(coords)
 
 # Record a DISPLAY_SCREEN message to let Data Viewer know the
@@ -30,10 +30,10 @@ tk.sendMessage('DISPLAY_SCREEN 0 0 {SCN_W - 1} {SCN_H - 1}')
 # Run through five trials
 for trial in range(1, 6):
     # Print out a message to show the current trial
-    print('Trial #: {trial}')
+    print(f'Trial #: {trial}')
 
     # Log a TRIALID message to mark trial start
-    tk.sendMessage('TRIALID {trial}')
+    tk.sendMessage(f'TRIALID {trial}')
 
     # Start recording
     tk.startRecording(1, 1, 1, 1)

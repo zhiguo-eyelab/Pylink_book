@@ -35,10 +35,10 @@ pylink.msecDelay(50)
 tk.sendCommand('sample_rate 500')
 
 # Pass screen resolution  to the tracker
-tk.sendCommand("screen_pixel_coords = 0 0 {SCN_W-1} {SCN_H-1}")
+tk.sendCommand(f"screen_pixel_coords = 0 0 {SCN_W-1} {SCN_H-1}")
 
 # Send a DISPLAY_COORDS message so Data Viewer knows the correct screen size
-tk.sendMessage("DISPLAY_COORDS = 0 0 {SCN_W-1} {SCN_H-1}")
+tk.sendMessage(f"DISPLAY_COORDS = 0 0 {SCN_W-1} {SCN_H-1}")
 
 # Choose a calibration type, H3, HV3, HV5, HV13 (HV = horizontal/vertical)
 tk.sendCommand("calibration_type = HV9")
@@ -87,8 +87,8 @@ def run_trial(trial_duration, movement_pars):
     The Sinusoidal movement pattern is determined by the following equation
     y(t) = amplitude * sin(frequency * t + phase)
     for a circular or elliptical movements, the phase in x and y directions
-    should be pi/2 (direction matters). Note that angular frequency is used
-    here (radians/sececond)."""
+    should be pi/2 (direction matters). Note that angular frequency
+    (radians/sececond) is used in the equation."""
 
     # Parse the movement pattern parameters
     amp_x, amp_y, phase_x, phase_y, freq_x, freq_y = movement_pars
@@ -134,7 +134,7 @@ def run_trial(trial_duration, movement_pars):
         else:
             _x = int(tar_x + SCN_W/2)
             _y = int(SCN_H/2 - tar_y)
-            tar_msg = '!V TARGET_POS target {_x}, {_y} 1 0'
+            tar_msg = f'!V TARGET_POS target {_x}, {_y} 1 0'
             tk.sendMessage(tar_msg)
 
         time_elapsed = flip_time - move_start
@@ -155,14 +155,14 @@ def run_trial(trial_duration, movement_pars):
     tk.stopRecording()
 
     # Send trial variables to record in the EDF data file
-    tk.sendMessage("!V TRIAL_VAR amp_x {amp_x:.2f}")
-    tk.sendMessage("!V TRIAL_VAR amp_y {amp_y:.2f}")
-    tk.sendMessage("!V TRIAL_VAR phase_x {phase_x:.2f}")
+    tk.sendMessage(f"!V TRIAL_VAR amp_x {amp_x:.2f}")
+    tk.sendMessage(f"!V TRIAL_VAR amp_y {amp_y:.2f}")
+    tk.sendMessage(f"!V TRIAL_VAR phase_x {phase_x:.2f}")
     pylink.pumpDelay(2)  # give the tracker a break
-    tk.sendMessage("!V TRIAL_VAR phase_y {phase_y:.2f}")
-    tk.sendMessage("!V TRIAL_VAR freq_x {freq_x:.2f}")
-    tk.sendMessage("!V TRIAL_VAR freq_y {freq_y:.2f}")
-    tk.sendMessage("!V TRIAL_VAR duration {trial_duration:.2f}")
+    tk.sendMessage(f"!V TRIAL_VAR phase_y {phase_y:.2f}")
+    tk.sendMessage(f"!V TRIAL_VAR freq_x {freq_x:.2f}")
+    tk.sendMessage(f"!V TRIAL_VAR freq_y {freq_y:.2f}")
+    tk.sendMessage(f"!V TRIAL_VAR duration {trial_duration:.2f}")
 
     # Send a 'TRIAL_RESULT' message to mark the end of trial
     tk.sendMessage('TRIAL_RESULT')

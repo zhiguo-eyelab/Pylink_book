@@ -148,7 +148,7 @@ def run_trial(params):
             ACC = int(key_pressed == correct_answer)
 
             # Send a message mark the key response
-            tk.sendMessage("Key_resp {key_pressed}")
+            tk.sendMessage(f"Key_resp {key_pressed}")
             gotKey = True
 
     # Clear the window at the end of a trials2Test
@@ -168,7 +168,7 @@ def run_trial(params):
     tk.sendMessage(f"!V TRIAL_VAR ACC {ACC}")
 
     # Send a 'TRIAL_RESULT' message to mark the end of trial
-    tk.sendMessage("TRIAL_RESULT {ACC}")
+    tk.sendMessage(f"TRIAL_RESULT {ACC}")
 
 # Run a block of 8 trials, in random order
 trials_to_test = my_trials[:]*2

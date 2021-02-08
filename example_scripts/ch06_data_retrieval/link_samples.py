@@ -23,7 +23,7 @@ tk.sendCommand('sample_rate 1000')
 
 # Make gaze, HREF, and raw (PUPIL) data available over the link
 sample_flag = 'LEFT,RIGHT,GAZE,GAZERES,PUPIL,HREF,AREA,STATUS,INPUT'
-tk.sendCommand('link_sample_data = {sample_flag}')
+tk.sendCommand(f'link_sample_data = {sample_flag}')
 
 # Open an SDL window for calibration
 pylink.openGraphics()

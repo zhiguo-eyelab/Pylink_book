@@ -29,7 +29,7 @@ for line in asc:
     if re.search('SYNCTIME', line):  # message marking image onset
         trial_start = True
         trial_number += 1
-        print('processing trial # %d...' % trial_number)
+        print(f'processing trial # {trial_number}...')
 
         sigma_x, sigma_y = (0.1, 0.1)  # width of the 2-D gaussian-Y
         alpha = 0.5  # transparency for the heatmap
@@ -67,7 +67,7 @@ for line in asc:
         heatmap = heatmap.convert('RGBA')
         heatmap = Image.blend(background_pic, heatmap, alpha)  # blending
         # Save the heatmap as an PNG file
-        heatmap.save('heatmap_trial_%d.png' % trial_number, 'PNG')
+        heatmap.save(f'heatmap_trial_{trial_number}.png', 'PNG')
         trial_start = False
 
 asc.close()  # close the ASC file

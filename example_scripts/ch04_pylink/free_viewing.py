@@ -6,8 +6,10 @@
 #
 # Description:
 # A free-viewing task implemented in Pygame.
+# Press any key to terminate a trial
 
 import os
+import random
 import pylink
 import pygame
 from pygame.locals import *
@@ -48,47 +50,47 @@ tk.sendCommand('validation_area_proportion 0.8 0.8')
 # Step 4: open a Pygame window; then, call pylink.openGraphics()
 # to request Pylink to use this window for calibration
 pygame.display.set_mode((SCN_W, SCN_H), DOUBLEBUF | FULLSCREEN)
+pygame.mouse.set_visible(False)  # hide the mouse cursor
 pylink.openGraphics()
 
 # Step 5: calibrate the tracker, then run through the trials
 tk.doTrackerSetup()
 
-# Images and the correct response keys for all trials
+# Parameters of all trials stored in a list
 t_pars = [
-    ['lake.png', 'c'],
-    ['lake_blur.png', 'b'],
-    ['train.png', 'c'],
-    ['train_blur.png', 'b']
+    ['quebec.jpg', 'no_people'],
+    ['woods.jpg', 'with_peole']
     ]
 
 # Define a function to group the lines of code that will be executed
 # in each trial
 def run_trial(params):
     ''' Run a trial
-    params: a list containing the picture to present and the correct
-    keypress, e.g., ['lake.png', 'c'] '''
+
+    params: image, condition in a list,
+    e.g., ['quebec.jpg', 'no_people'] '''
     
     # Unpacking the picture and correct keypress
     pic, cor_key = params
 
     # Load the picture, scale the image to fill up the screen
     pic_path = os.path.join('images', pic)
-    img = pygame.image.load(pic_path).convert()
+    img = pygame.image.load(pic_path)
     img = pygame.transform.scale(img, (SCN_W, SCN_H))
 
     # clear the host screen before we draw a backdrop on the Host PC
-    el_tracker.sendCommand('clear_screen 0')
+    tk.sendCommand('clear_screen 0')
 
     # draw the backdrop with the bitmapBackdrop() command, see chapter 7
     # parameters: width, height, pixel, crop_x, crop_y,
     #             crop_width, crop_height, x, y on the Host, drawing options
-    pixels = [[img.get_at((i, j))[0:3] for i in range(scn_width)]
-              for j in range(scn_height)]
-    el_tracker.bitmapBackdrop(SCN_W, SCN_H, pixels, 0, 0, SCN_W, SCN_H,
-                              0, 0, pylink.BX_MAXCONTRAST)
+    pixels = [[img.get_at((i, j))[0:3] for i in range(SCN_W)]
+              for j in range(SCN_H)]
+    tk.bitmapBackdrop(SCN_W, SCN_H, pixels, 0, 0, SCN_W, SCN_H,
+                      0, 0, pylink.BX_MAXCONTRAST)
 
     # Record_status_message: show some info on the Host PC
-    tk.sendCommand("record_status_message 'Picture: {pic}'")
+    tk.sendCommand(f"record_status_message 'Picture: {pic}'")
 
     # Drift-check; re-calibrate if ESCAPE is pressed
     # parameters: x, y, draw_target, allow_setup
@@ -106,7 +108,7 @@ def run_trial(params):
     pygame.display.flip()
 
     # Log a message to mark image onset
-    tk.sendMessage('Image_onset')
+    tk.sendMessage('image_onset')
 
     # Log a '!V IMGLOAD' message to the EDF data file, so Data Viewer
     # knows where to find the image when visualizing the gaze data
@@ -118,10 +120,20 @@ def run_trial(params):
     got_key = False
     while not got_key:
         for ev in pygame.event.get():
-            if ev.type == KEYDOWN and ev.key in [K_c, K_b]:
+            if ev.type == KEYDOWN:
                 tk.sendMessage(f'Keypress {ev.key}')
                 got_key = True
 
+    # clear the screen
+    surf.fill((128, 128, 128))
+    pygame.display.flip()
+
+    # clear the host backdrop as well
+    tk.sendCommand('clear_screen 0')
+
+    # Log a message to mark image offset
+    tk.sendMessage('image_offset')
+    
     # stop recording
     tk.stopRecording()
 

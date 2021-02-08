@@ -34,7 +34,7 @@ for line in asc:
         x = []
         y = []
         p = []
-        print('processing trial # %d...' % trial_number)
+        print(f'processing trial # {trial_number}...')
 
     # Sample lines always start with timestamps
     if trial_start and re.search('^\d', line):

@@ -51,7 +51,7 @@ pylink.pumpDelay(100)
 
 for j in range(1, 9):
     # Write a TTL to the Data Register
-    tk.sendCommand('*write_ioport 0x8 {j}')
+    tk.sendCommand(f'*write_ioport 0x8 {j}')
     # TTL signal duration--20 ms
     pylink.pumpDelay(20)
     # Clear the Data Register

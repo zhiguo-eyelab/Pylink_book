@@ -22,7 +22,7 @@ tk.setOfflineMode()
 
 # Make all types of sample data available over the link
 sample_flags = 'LEFT,RIGHT,GAZE,GAZERES,PUPIL,HREF,AREA,STATUS,INPUT'
-tk.sendCommand('link_sample_data  = {sample_flags}')
+tk.sendCommand(f'link_sample_data  = {sample_flags}')
 
 # Screen resolution
 SCN_W, SCN_H = (1280, 800)
@@ -32,7 +32,7 @@ win = visual.Window((SCN_W, SCN_H), fullscr=False,
                     units='pix', allowStencil=True)
 
 # Pass the display pixel coordinates (left, top, right, bottom) to the tracker
-coords = "screen_pixel_coords = 0 0 {SCN_W - 1} {SCN_H - 1}"
+coords = f"screen_pixel_coords = 0 0 {SCN_W - 1} {SCN_H - 1}"
 tk.sendCommand(coords)
 
 # Request Pylink to use the custom EyeLinkCoreGraphicsPsychoPy library
@@ -41,7 +41,7 @@ genv = EyeLinkCoreGraphicsPsychoPy(tk, win)
 pylink.openGraphicsEx(genv)
 
 # Calibrate the tracker
-calib_msg = visual.TextStim(win, text='Press ENTER to calibrate')
+calib_msg = visual.TextStim(win, text='Press ENTER twice to calibrate')
 calib_msg.draw()
 win.flip()
 tk.doTrackerSetup()

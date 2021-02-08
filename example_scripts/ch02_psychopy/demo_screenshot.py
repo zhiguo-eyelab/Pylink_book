@@ -14,7 +14,7 @@ win = visual.Window(size=[1280, 800], units="pix", fullscr=True)
 
 # Get frame rate (frame per second)
 fps = win.getActualFrameRate()
-print('Frame rate is: {} FPS'.format(fps))
+print(f'Frame rate is: {fps} FPS')
 
 # Show the screen for 1.0 second
 win.color = (0, 0, 0)

@@ -20,20 +20,20 @@ tk.openDataFile('imgload.edf')
 SCN_W, SCN_H = (1280, 800)
 
 # Pass the screen coordinates to the tracker
-coords = "screen_pixel_coords = 0 0 {SCN_W - 1} {SCN_H - 1}"
+coords = f"screen_pixel_coords = 0 0 {SCN_W - 1} {SCN_H - 1}"
 tk.sendCommand(coords)
 
 # Record a DISPLAY_SCREEN message to let Data Viewer know the
 # correct screen resolution to use when visualizing the data
-tk.sendMessage('DISPLAY_SCREEN 0 0 {SCN_W - 1} {SCN_H - 1}')
+tk.sendMessage(f'DISPLAY_SCREEN 0 0 {SCN_W - 1} {SCN_H - 1}')
 
 # Run through five trials
 for trial in range(1, 6):
     # Print out a message to show the current trial
-    print('Trial #: {trial}')
+    print(f'Trial #: {trial}')
 
     # Log a TRIALID message to mark trial start
-    tk.sendMessage('TRIALID {trial}')
+    tk.sendMessage(f'TRIALID {trial}')
 
     # Start recording
     tk.startRecording(1, 1, 1, 1)
@@ -41,7 +41,7 @@ for trial in range(1, 6):
     # Assuming an image is presented in the task and we would like
     # to have the same image in the background when visualizing data
     # in Data Viewer
-    tk.sendMessage('!V IMGLOAD FILL {'woods.jpg'}')
+    tk.sendMessage('!V IMGLOAD FILL {}'.format('woods.jpg'))
 
     # Pretending that we are doing something for 2-sec
     pylink.pumpDelay(2000)

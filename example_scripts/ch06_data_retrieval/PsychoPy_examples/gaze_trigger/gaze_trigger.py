@@ -25,7 +25,7 @@ tk.setOfflineMode()
 # FIXUPDATE event, which report the current status of a fixation at
 # predefined intervals (default = 50 ms)
 event_flags = 'LEFT,RIGHT,FIXATION,FIXUPDATE,SACCADE,BLINK,BUTTON,INPUT'
-tk.sendCommand('link_event_filter = {event_flags}')
+tk.sendCommand(f'link_event_filter = {event_flags}')
 
 # Screen resolution
 SCN_W, SCN_H = (1280, 800)
@@ -34,7 +34,7 @@ SCN_W, SCN_H = (1280, 800)
 win = visual.Window((SCN_W, SCN_H), fullscr=False, units='pix')
 
 # Pass the display pixel coordinates (left, top, right, bottom) to the tracker
-coords = "screen_pixel_coords = 0 0 {SCN_W - 1} {SCN_H - 1}"
+coords = f"screen_pixel_coords = 0 0 {SCN_W - 1} {SCN_H - 1}"
 tk.sendCommand(coords)
 
 # Request Pylink to use the custom EyeLinkCoreGraphicsPsychoPy library
@@ -43,7 +43,7 @@ genv = EyeLinkCoreGraphicsPsychoPy(tk, win)
 pylink.openGraphicsEx(genv)
 
 # Calibrate the tracker
-calib_msg = visual.TextStim(win, text='Press ENTER to calibrate')
+calib_msg = visual.TextStim(win, text='Press ENTER twice to calibrate')
 calib_msg.draw()
 win.flip()
 tk.doTrackerSetup()
@@ -56,7 +56,7 @@ for i in range(3):
     fix = visual.GratingStim(win, tex='None', mask='circle', size=30.0)
 
     # Load the image
-    img = visual.ImageStim(win, image='woods.jpg')
+    img = visual.ImageStim(win, image='woods.jpg', size=(SCN_W, SCN_H))
     
     # Put tracker in Offline mode before we start recording
     tk.setOfflineMode()
