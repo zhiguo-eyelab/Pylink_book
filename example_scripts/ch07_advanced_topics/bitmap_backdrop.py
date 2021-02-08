@@ -2,7 +2,7 @@
 #
 # Filename: bitmap_backdrop.py
 # Author: Zhiguo Wang
-# Date: 2/5/2020
+# Date: 2/5/2021
 #
 # Description:
 # Transfer an image to the Host to use as the backdrop

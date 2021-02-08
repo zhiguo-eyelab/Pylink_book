@@ -1,9 +1,12 @@
+#!/usr/bin/env python3
+#
 # Filename: get_fontNames.py
 # Author: Zhiguo Wang
-# Date: 2/3/2020
+# Date: 2/7/2020
 #
 # Description:
 # Retrieve the names of all available system fonts
+# Run this script from the command line
 
 from matplotlib import font_manager
 

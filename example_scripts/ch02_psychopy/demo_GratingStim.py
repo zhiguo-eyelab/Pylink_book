@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+#
 # Filename: demo_GratingStim.py
 # Author: Zhiguo Wang
-# Date: 11/26/2020
+# Date: 2/7/2021
 #
 # Description:
 # The GratingStim() function in PsychoPy
@@ -18,7 +20,7 @@ gabor = visual.GratingStim(win, tex='sin', mask='gauss',
                            size=128, sf=1/32.0, pos=(0, 100))
 checker = visual.GratingStim(win, tex='sqrXsqr', mask='circle',
                              size=128, sf=1/32.0, pos=(200, 100))
-# Customize a texture
+# Customize texture
 # a 8 x 8 grid of random values between -1 and 1
 custom_texture = np.random.random((8, 8))*2 - 1
 numpy_texture = visual.GratingStim(win, tex=custom_texture, mask=None,
@@ -43,7 +45,7 @@ win.flip()
 win.getMovieFrame()
 win.saveMovieFrames('gratings.png')
 
-# Show the stimuli for 5 seconds, then quit PsychoPy
+# Show the stimuli for 5 seconds, then close the window and quit PsychoPy
 core.wait(5.0)
 win.close()
 core.quit()

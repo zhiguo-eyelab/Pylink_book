@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Filename: pursuit.py
 # Author: Zhiguo Wang
@@ -34,12 +34,11 @@ pylink.msecDelay(50)
 # this command does not support EyeLInk II/I
 tk.sendCommand('sample_rate 500')
 
-# Send the resolution of the monitor to the tracker
-tk.sendCommand("screen_pixel_coords = 0 0 %d %d" % (SCN_W-1, SCN_H-1))
+# Pass screen resolution  to the tracker
+tk.sendCommand("screen_pixel_coords = 0 0 {SCN_W-1} {SCN_H-1}")
 
-# Save monitor resolution in EDF data file,
-# so Data Viewer can correctly load background graphics
-tk.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (SCN_W-1, SCN_H-1))
+# Send a DISPLAY_COORDS message so Data Viewer knows the correct screen size
+tk.sendMessage("DISPLAY_COORDS = 0 0 {SCN_W-1} {SCN_H-1}")
 
 # Choose a calibration type, H3, HV3, HV5, HV13 (HV = horizontal/vertical)
 tk.sendCommand("calibration_type = HV9")
@@ -62,10 +61,10 @@ target = visual.GratingStim(win, tex=None, mask='circle', size=25)
 pursuitClock = core.Clock()
 
 # Paramters for the Sinusoidal movement pattern
-# [amp_x, amp_y, phase_x, phase_y, freq_x, freq_y]
+# [amp_x, amp_y, phase_x, phase_y, angular_freq_x, angular_freq_y]
 mov_pars = [
-    [300, 300, pi*3/2, 0, 1.0, 1.0],
-    [300, 300, pi/2, 0, 1.0, 1.0]
+    [300, 300, pi*3/2, 0, 2*pi/8, 2*pi/8],
+    [300, 300, pi/2, 0, 2*pi/8, 2*pi/8]
     ]
 
 # Step 6: calibrate the tracker
@@ -88,7 +87,8 @@ def run_trial(trial_duration, movement_pars):
     The Sinusoidal movement pattern is determined by the following equation
     y(t) = amplitude * sin(frequency * t + phase)
     for a circular or elliptical movements, the phase in x and y directions
-    should be pi/2 (direction matters) """
+    should be pi/2 (direction matters). Note that angular frequency is used
+    here (radians/sececond)."""
 
     # Parse the movement pattern parameters
     amp_x, amp_y, phase_x, phase_y, freq_x, freq_y = movement_pars
@@ -108,11 +108,7 @@ def run_trial(trial_duration, movement_pars):
     target.pos = (tar_x, tar_y)
     target.draw()
     win.flip()
-    try:
-        tk.doDriftCorrect(int(tar_x + SCN_W/2),
-                          int(SCN_H/2 - tar_y), 0, 1)
-    except:
-        tk.doTrackerSetup()
+    tk.doDriftCorrect(int(tar_x + SCN_W/2), int(SCN_H/2 - tar_y), 0, 1)
 
     # Put the tracker in idle mode before we start recording
     tk.setOfflineMode()
@@ -138,7 +134,7 @@ def run_trial(trial_duration, movement_pars):
         else:
             _x = int(tar_x + SCN_W/2)
             _y = int(SCN_H/2 - tar_y)
-            tar_msg = '!V TARGET_POS target {}, {} 1 0'.format(_x, _y)
+            tar_msg = '!V TARGET_POS target {_x}, {_y} 1 0'
             tk.sendMessage(tar_msg)
 
         time_elapsed = flip_time - move_start
@@ -146,7 +142,7 @@ def run_trial(trial_duration, movement_pars):
         # update the target position
         tar_x = amp_x*sin(freq_x * time_elapsed + phase_x)
         tar_y = amp_y*sin(freq_y * time_elapsed + phase_y)
-        print(time_elapsed, tar_x, tar_y)
+
         # break if the time elapsed exceeds the trial duration
         if time_elapsed > trial_duration:
             break
@@ -159,13 +155,14 @@ def run_trial(trial_duration, movement_pars):
     tk.stopRecording()
 
     # Send trial variables to record in the EDF data file
-    tk.sendMessage("!V TRIAL_VAR amp_x {0:.2f}".format(amp_x))
-    tk.sendMessage("!V TRIAL_VAR amp_y {0:.2f}".format(amp_y))
-    tk.sendMessage("!V TRIAL_VAR phase_x {0:.2f}".format(phase_x))
-    tk.sendMessage("!V TRIAL_VAR phase_y {0:.2f}".format(phase_y))
-    tk.sendMessage("!V TRIAL_VAR freq_x {0:.2f}".format(freq_x))
-    tk.sendMessage("!V TRIAL_VAR freq_y {0:.2f}".format(freq_y))
-    tk.sendMessage("!V TRIAL_VAR duration {0:.2f}".format(trial_duration))
+    tk.sendMessage("!V TRIAL_VAR amp_x {amp_x:.2f}")
+    tk.sendMessage("!V TRIAL_VAR amp_y {amp_y:.2f}")
+    tk.sendMessage("!V TRIAL_VAR phase_x {phase_x:.2f}")
+    pylink.pumpDelay(2)  # give the tracker a break
+    tk.sendMessage("!V TRIAL_VAR phase_y {phase_y:.2f}")
+    tk.sendMessage("!V TRIAL_VAR freq_x {freq_x:.2f}")
+    tk.sendMessage("!V TRIAL_VAR freq_y {freq_y:.2f}")
+    tk.sendMessage("!V TRIAL_VAR duration {trial_duration:.2f}")
 
     # Send a 'TRIAL_RESULT' message to mark the end of trial
     tk.sendMessage('TRIAL_RESULT')
@@ -174,7 +171,7 @@ def run_trial(trial_duration, movement_pars):
 test_list = mov_pars[:]
 random.shuffle(test_list)
 for trial in test_list:
-    run_trial(6.0, trial)
+    run_trial(8.0, trial)
 
 # Step 9: Downlad EDF file to a local folder ('edfData')
 msg = 'Downloading EDF file from the EyeLink Host PC ...'

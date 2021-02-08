@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+#
 # Filename: demo_PsychHID.py
 # Author: Zhiguo Wang
-# Date: 11/26/2020
+# Date: 2/6/2021
 #
 # Description:
 # Using PsychHID to register keyboard events in PsychoPy
@@ -34,6 +36,6 @@ for i in range(10):
     kb.clock.reset()  # reset the clock
     waitKey()
     
-# Quit PsychoPy
+# Close the window and quit PsychoPy
 win.close()
 core.quit()

@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+#
 # Filename: parse_ASC_re.py
 # Author: Zhiguo Wang
-# Date: 11/11/2020
+# Date: 2/8/2021
 #
 # Description:
 # Parse the ASC file with regular expressions (re).

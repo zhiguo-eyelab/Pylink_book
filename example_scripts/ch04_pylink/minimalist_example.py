@@ -34,10 +34,10 @@ for i in range(5):
     # stop recording
     tk.stopRecording()
 
-# Step 6: close the EDF data file and download it
+# Step 6: close the EDF data file and download it from the Host PC
 tk.closeDataFile()
 tk.receiveDataFile('test.edf', 'test.edf')
 
-# Step 7: close the graphics and the link to the tracker
-pylink.closeGraphics()
+# Step 7: close the link to the tracker, then close the window
 tk.close()
+pylink.closeGraphics()

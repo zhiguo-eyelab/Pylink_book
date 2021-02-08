@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+#
 # Filename: demo_mouse.py
 # Author: Zhiguo Wang
-# Date: 11/26/2020
+# Date: 2/6/2021
 #
 # Description:
 # A short demo illustrating the various mouse functions in PsychoPy
@@ -34,12 +36,12 @@ event.clearEvents()
 # Set the mouse position, so the movement starts from the fixation cross
 mouse.setPos((0, -150))
 
-# Use a list to store mouse position
+# Use a list to store the mouse position
 traj = [mouse.getPos()]
 
 # In a while loop, check if the "yes" or "no" circle has been clicked
 while not (mouse.isPressedIn(circle_no) or mouse.isPressedIn(circle_yes)):
-    # Following a mouse position change, add the new moouse position to 'traj'
+    # Following a mouse position change, add the new mouse position to 'traj'
     if mouse.mouseMoved():
         traj.append(mouse.getPos())
 
@@ -54,6 +56,6 @@ while not (mouse.isPressedIn(circle_no) or mouse.isPressedIn(circle_yes)):
     mouse_traj.draw()
     win.flip()
 
-# Quit PsychoPy
+# Close the window and quit PsychoPy
 win.close()
 core.quit()

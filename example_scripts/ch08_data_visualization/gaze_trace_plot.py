@@ -2,7 +2,7 @@
 #
 # Filename: gaze_trace_plot.py
 # Author: Zhiguo Wang
-# Date: 11/11/2020
+# Date: 2/8/2021
 #
 # Description:
 # Extract sample data from the ASC file, then plot a gaze trace plot.

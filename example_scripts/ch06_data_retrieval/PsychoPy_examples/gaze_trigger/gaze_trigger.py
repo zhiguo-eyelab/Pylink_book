@@ -25,7 +25,7 @@ tk.setOfflineMode()
 # FIXUPDATE event, which report the current status of a fixation at
 # predefined intervals (default = 50 ms)
 event_flags = 'LEFT,RIGHT,FIXATION,FIXUPDATE,SACCADE,BLINK,BUTTON,INPUT'
-tk.sendCommand('link_event_filter = {}'.format(event_flags))
+tk.sendCommand('link_event_filter = {event_flags}')
 
 # Screen resolution
 SCN_W, SCN_H = (1280, 800)
@@ -34,7 +34,7 @@ SCN_W, SCN_H = (1280, 800)
 win = visual.Window((SCN_W, SCN_H), fullscr=False, units='pix')
 
 # Pass the display pixel coordinates (left, top, right, bottom) to the tracker
-coords = "screen_pixel_coords = 0 0 {} {}".format(SCN_W - 1, SCN_H - 1)
+coords = "screen_pixel_coords = 0 0 {SCN_W - 1} {SCN_H - 1}"
 tk.sendCommand(coords)
 
 # Request Pylink to use the custom EyeLinkCoreGraphicsPsychoPy library

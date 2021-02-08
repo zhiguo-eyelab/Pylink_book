@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Filename: Stroop_task.py
 # Author: Zhiguo Wang
@@ -33,10 +33,10 @@ tk.setOfflineMode()
 tk.sendCommand('sample_rate 500')
 
 # Pass screen resolution  to the tracker
-tk.sendCommand("screen_pixel_coords = 0 0 {} {}".format(SCN_W-1, SCN_H-1))
+tk.sendCommand(f"screen_pixel_coords = 0 0 {SCN_W-1} {SCN_H-1}")
 
 # Send a DISPLAY_COORDS message so Data Viewer knows the correct screen size
-tk.sendMessage("DISPLAY_COORDS = 0 0 {} {}".format(SCN_W-1, SCN_H-1))
+tk.sendMessage(f"DISPLAY_COORDS = 0 0 {SCN_W-1} {SCN_H-1}")
 
 # Choose a calibration type, H3, HV3, HV5, HV13 (HV = horizontal/vertical)
 tk.sendCommand("calibration_type = HV9")
@@ -93,17 +93,14 @@ def run_trial(params):
     tk.setOfflineMode()
 
     # Send a "TRIALID" message to mark the start of a trial
-    tk.sendMessage("TRIALID {} {} {}".format(text, text_color, congruency))
+    tk.sendMessage(f"TRIALID {text} {text_color} {congruency}")
 
     # Record_status_message : show some info on the Host PC
-    msg = "record_status_message 'Congruency-{}'".format(congruency)
+    msg = f"record_status_message 'Congruency-{congruency}'"
     tk.sendCommand(msg)
 
     # Drift check/correction, params, x, y, draw_target, allow_setup
-    try:
-        tk.doDriftCorrect(int(SCN_W/2), int(SCN_H/2), 1, 1)
-    except:
-        tk.doTrackerSetup()
+    tk.doDriftCorrect(int(SCN_W/2), int(SCN_H/2), 1, 1)
 
     # Put the tracker in idle mode before we start recording
     tk.setOfflineMode()
@@ -126,7 +123,7 @@ def run_trial(params):
     # Save a screenshot to use as background graphics in Data Viewer
     if not os.path.exists('screenshots'):
         os.mkdir('screenshots')
-    screenshot = 'screenshots/cond_{}_{}.jpg'.format(text, text_color)
+    screenshot = f'screenshots/cond_{text}_{text_color}.jpg'
     win.getMovieFrame()
     win.saveMovieFrames(screenshot)
 
@@ -135,8 +132,8 @@ def run_trial(params):
     # Data Viewer knows the correct onset time of the screen
     msg_offset = int((core.getTime() - tar_onset) * 1000)
     # Send an IMGLOAD message to let DV know which screenshot to load
-    scnshot = os.path.join('..', screenshot)
-    tk.sendMessage('{} !V IMGLOAD FILL {}'.format(msg_offset, scnshot))
+    scn_shot = os.path.join('..', screenshot)
+    tk.sendMessage(f'{msg_offset} !V IMGLOAD FILL {scn_shot}')
 
     # Clear bufferred events (in PsychoPy), then wait for key presses
     event.clearEvents(eventType='keyboard')
@@ -150,15 +147,8 @@ def run_trial(params):
             # correct=1, incorrect=0
             ACC = int(key_pressed == correct_answer)
 
-            # Terminate the task if ESCAPE is pressed
-            if key_pressed == 'escape':
-                tk.stopRecording()
-                tk.close()
-                win.close()
-                core.quit()
-
             # Send a message mark the key response
-            tk.sendMessage("Key_resp {}".format(key_pressed))
+            tk.sendMessage("Key_resp {key_pressed}")
             gotKey = True
 
     # Clear the window at the end of a trials2Test
@@ -169,15 +159,16 @@ def run_trial(params):
     tk.stopRecording()
 
     # Send trial variables to record in the EDF data file
-    tk.sendMessage("!V TRIAL_VAR word {}".format(text))
-    tk.sendMessage("!V TRIAL_VAR color {}".format(text_color))
-    tk.sendMessage("!V TRIAL_VAR congruency {}".format(congruency))
-    tk.sendMessage("!V TRIAL_VAR key_pressed {}".format(key_pressed))
-    tk.sendMessage("!V TRIAL_VAR RT {}".format(round(RT * 1000)))
-    tk.sendMessage("!V TRIAL_VAR ACC {}".format(ACC))
+    tk.sendMessage(f"!V TRIAL_VAR word {text}")
+    tk.sendMessage(f"!V TRIAL_VAR color {text_color}")
+    tk.sendMessage(f"!V TRIAL_VAR congruency {congruency}")
+    pylink.pumpDelay(2)  # give the link a break
+    tk.sendMessage(f"!V TRIAL_VAR key_pressed {key_pressed}")
+    tk.sendMessage(f"!V TRIAL_VAR RT {round(RT * 1000)}")
+    tk.sendMessage(f"!V TRIAL_VAR ACC {ACC}")
 
     # Send a 'TRIAL_RESULT' message to mark the end of trial
-    tk.sendMessage("TRIAL_RESULT {}".format(ACC))
+    tk.sendMessage("TRIAL_RESULT {ACC}")
 
 # Run a block of 8 trials, in random order
 trials_to_test = my_trials[:]*2

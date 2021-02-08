@@ -23,7 +23,7 @@ tk.sendCommand('sample_rate 1000')
 
 # Make all types of event data are available over the link
 event_flgs = 'LEFT,RIGHT,FIXATION,FIXUPDATE,SACCADE,BLINK,BUTTON,INPUT'
-tk.sendCommand('link_event_filter = {}'.format(event_flgs))
+tk.sendCommand('link_event_filter = {event_flgs}')
 
 # Open an SDL window for calibration
 pylink.openGraphics()
@@ -55,13 +55,13 @@ while True:
         # in the message to examine the link delay
         ev = tk.getFloatData()
         if dt == pylink.STARTSACC:
-            tk.sendMessage('STARTSACC {}'.format(ev.getTime()))
+            tk.sendMessage('STARTSACC {ev.getTime()}')
         if dt == pylink.ENDSACC:
-            tk.sendMessage('ENDSACC {}'.format(ev.getTime()))
+            tk.sendMessage('ENDSACC {ev.getTime()}')
         if dt == pylink.STARTFIX:
-            tk.sendMessage('STARTFIX {}'.format(ev.getTime()))
+            tk.sendMessage('STARTFIX {ev.getTime()}')
         if dt == pylink.ENDFIX:
-            tk.sendMessage('ENDFIX {}'.format(ev.getTime()))
+            tk.sendMessage('ENDFIX {ev.getTime()}')
 
 # Stop recording
 tk.stopRecording()

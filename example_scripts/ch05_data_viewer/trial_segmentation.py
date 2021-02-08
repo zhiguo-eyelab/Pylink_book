@@ -20,10 +20,10 @@ tk.openDataFile('seg.edf')
 # Run through five trials
 for trial in range(1, 6):
     # Print out a message to show the current trial
-    print("Trial #: {}".format(trial))
+    print('Trial #: {trial}')
 
     # Log a TRIALID message to mark trial start
-    tk.sendMessage('TRIALID {}'.format(trial))
+    tk.sendMessage('TRIALID {trial}')
 
     # Start recording
     tk.startRecording(1, 1, 1, 1)

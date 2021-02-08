@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+#
 # Filename: shapes.py
 # Author: Zhiguo Wang
-# Date: 11/26/2020
+# Date: 2/7/2021
 #
 # Description:
 # Drawing in PsychoPy
@@ -40,6 +42,6 @@ while True:
     if rect.contains((400, 300)):
         break
 
-# Quit PsychoPy
+# Close the window and quit PsychoPy
 win.close()
 core.quit()

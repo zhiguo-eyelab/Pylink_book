@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
-# Filename: video_playback.py
+# Filename: video.py
 # Author: Zhiguo Wang
 # Date: 2/6/2021
 #
@@ -34,10 +34,10 @@ tk.setOfflineMode()
 tk.sendCommand('sample_rate 500')
 
 # Pass screen resolution  to the tracker
-tk.sendCommand("screen_pixel_coords = 0 0 {} {}".format(SCN_W-1, SCN_H-1))
+tk.sendCommand("screen_pixel_coords = 0 0 {SCN_W-1} {SCN_H-1}")
 
 # Send a DISPLAY_COORDS message so Data Viewer knows the correct screen size
-tk.sendMessage("DISPLAY_COORDS = 0 0 {} {}".format(SCN_W-1, SCN_H-1))
+tk.sendMessage("DISPLAY_COORDS = 0 0 {SCN_W-1} {SCN_H-1}")
 
 # Choose a calibration type, H3, HV3, HV5, HV13 (HV = horizontal/vertical)
 tk.sendCommand("calibration_type = HV9")
@@ -86,17 +86,14 @@ def run_trial(pars):
     tk.setOfflineMode()
 
     # Send the standard "TRIALID" message to mark the start of a trial
-    tk.sendMessage("TRIALID {} {}".format(trial_num, movie_file))
+    tk.sendMessage("TRIALID {trial_num} {movie_file}")
 
     # Record_status_message : show some info on the Host PC
-    msg = "record_status_message 'Movie File: {}'".format(movie_file)
+    msg = "record_status_message 'Movie File: {movie_file}'"
     tk.sendCommand(msg)
 
     # Drift check/correction, params, x, y, draw_target, allow_setup
-    try:
-        tk.doDriftCorrect(int(SCN_W/2), int(SCN_H/2), 1, 1)
-    except:
-        tk.doTrackerSetup()
+    tk.doDriftCorrect(int(SCN_W/2), int(SCN_H/2), 1, 1)
 
     # Put the tracker in idle mode before we start recording
     tk.setOfflineMode()
@@ -125,13 +122,13 @@ def run_trial(pars):
         if current_frame_timestamp != prev_frame_timestamp:
             frame_n += 1
             # send a message to mark the onset of each video frame
-            tk.sendMessage('Video_Frame: {}'.format(frame_n))
+            tk.sendMessage('Video_Frame: {frame_n}')
             # VFRAME message: "!V VFRAME frame_num movie_pos_x,
             # movie_pos_y, path_to_movie_file"
             x = int(SCN_W/2 - mo_width/2)
             y = int(SCN_H/2 - mo_height/2)
-            path = os.path.join('..', movie_file)
-            msg = "!V VFRAME {} {} {} {}".format(frame_n, x, y, path)
+            path_to_movie = os.path.join('..', movie_file)
+            msg = "!V VFRAME {frame_n} {x} {y} {path_to_movie}"
             tk.sendMessage(msg)
             prev_frame_timestamp = current_frame_timestamp
 

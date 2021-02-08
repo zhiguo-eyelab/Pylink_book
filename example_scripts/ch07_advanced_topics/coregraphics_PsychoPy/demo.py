@@ -22,7 +22,7 @@ win = visual.Window((SCN_WIDTH, SCN_HEIGHT),
                     units='pix')
 
 # Pass display dimension (left, top, right, bottom) to the tracker
-coords = "screen_pixel_coords = 0 0 %d %d" % (SCN_WIDTH - 1, SCN_HEIGHT - 1)
+coords = "screen_pixel_coords = 0 0 {SCN_WIDTH - 1} {SCN_HEIGHT - 1}"
 tk.sendCommand(coords)
 
 # Create a custom graphics environment (genv) for calibration

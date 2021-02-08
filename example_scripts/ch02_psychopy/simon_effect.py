@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+#
 # Filename: simon_effect.py
 # Author: Zhiguo Wang
-# Date: 11/26/2020
+# Date: 2/6/2021
 #
 # Description:
 # Measuring the Simon effect in PsychoPy
@@ -9,7 +11,7 @@ import random
 from psychopy import visual, core, event, gui
 
 # Open a window and prepare the stimuli
-win = visual.Window((1024, 768), units='pix', fullscr=False, color='black')
+win = visual.Window((1280, 800), units='pix', fullscr=False, color='black')
 text_msg = visual.TextStim(win, text='message')
 tar_stim = visual.GratingStim(win, tex='None', mask='circle', size=60.0)
 
@@ -57,7 +59,7 @@ def run_trial(trial_pars, data_file, participant):
     trial_data = list(participant.values()) + \
         trial_pars + [t_tar_onset] + \
         list(tar_resp[0])
-    trial_data = map(str, trial_data)  # convert to string
+    trial_data = map(str, trial_data)  # convert list items to string
     data_file.write(','.join(trial_data) + '\n')
 
     # clear the screen and set an ITI of 500 ms
@@ -66,7 +68,8 @@ def run_trial(trial_pars, data_file, participant):
     core.wait(0.500)
 
 # ------ Real experiment starts here -------
-# Get participant info from a dialog
+
+# Get participant info with a dialog
 participant = {'Participant ID': 0, 'Participant Initials': 'zw'}
 dlg = gui.DlgFromDict(participant, title='Enter participant info here')
 
@@ -89,7 +92,7 @@ for pars in trial_list:
 # Close the data file
 d_file.close()
 
-# Quit PsychoPy
+# Close the window and quit PsychoPy
 win.close()
 core.quit()
 

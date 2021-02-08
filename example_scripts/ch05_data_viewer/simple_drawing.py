@@ -16,24 +16,24 @@ tk = pylink.EyeLink()
 # Open an EDF on the Host; filename must not exceed 8 characters
 tk.openDataFile('drawing.edf')
 
-# Assume the screen resolution is 1024 x 768 pixels
+# Assume the screen resolution is 1280 x 800 pixels
 SCN_W, SCN_H = (1024, 768)
 
 # Pass the screen coordinates to the tracker
-coords = "screen_pixel_coords = 0 0 {} {}".format(SCN_W - 1, SCN_H - 1)
+coords = 'screen_pixel_coords = 0 0 {SCN_W - 1} {SCN_H - 1}'
 tk.sendCommand(coords)
 
 # Record a DISPLAY_SCREEN message to let Data Viewer know the
 # correct screen resolution to use when visualizing the data
-tk.sendMessage('DISPLAY_SCREEN 0 0 {} {}'.format(SCN_W - 1, SCN_H - 1))
+tk.sendMessage('DISPLAY_SCREEN 0 0 {SCN_W - 1} {SCN_H - 1}')
 
 # Run through five trials
 for trial in range(1, 6):
     # Print out a message to show the current trial
-    print("Trial #: {}".format(trial))
+    print('Trial #: {trial}')
 
     # Log a TRIALID message to mark trial start
-    tk.sendMessage('TRIALID {}'.format(trial))
+    tk.sendMessage('TRIALID {trial}')
 
     # Start recording
     tk.startRecording(1, 1, 1, 1)
