@@ -38,7 +38,7 @@ tk.sendCommand(f"screen_pixel_coords = 0 0 {SCN_W-1} {SCN_H-1}")
 
 # Record a DISPLAY_SCREEN message to let Data Viewer know the
 # correct screen resolution to use when visualizing the data
-tk.sendMessage(f'DISPLAY_SCREEN 0 0 {SCN_W - 1} {SCN_H - 1}')
+tk.sendMessage(f'DISPLAY_COORDS 0 0 {SCN_W - 1} {SCN_H - 1}')
 
 # Request the tracker to perform a 9-point calibration
 tk.sendCommand("calibration_type = HV9")
@@ -112,7 +112,7 @@ def run_trial(params):
 
     # Log a '!V IMGLOAD' message to the EDF data file, so Data Viewer
     # knows where to find the image when visualizing the gaze data
-    img_path = os.path.join('images', pic)
+    img_path = f'images/{pic}'
     tk.sendMessage(f'!V IMGLOAD FILL {img_path}')
 
     # Wait for a key response

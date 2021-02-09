@@ -1,73 +1,1 @@
-#!/usr/bin/env python3
-#
-# Filename: heatmap_simple.py
-# Author: Zhiguo Wang
-# Date: 11/11/2020
-#
-# Description:
-# Extract fixations from the ASC file to create a heatmap
-
-import os
-import re
-from PIL import Image
-import numpy as np
-from matplotlib import cm  # colormap from matplotlib
-
-edf_dir = 'Picture/results/zw/'  # path to the EDF data file
-os.system('edf2asc -e -y -res %s' % (edf_dir + 'zw.edf'))  # convert the EDF
-asc = open(edf_dir + 'zw.asc', 'r')  # open converted ASC file
-
-scn_w, scn_h = [-32768, -32768]
-trial_start = False
-trial_number = 0
-for line in asc:
-    # Extract values from data lines
-    tmp_data = [int(float(x)) for x in re.findall(r'-?\d+\.?\d*', line)]
-
-    if re.search('GAZE_COORDS', line):  # get screen resolution
-        scn_w, scn_h = [int(x+1) for x in tmp_data[-2:]]
-    if re.search('SYNCTIME', line):  # message marking image onset
-        trial_start = True
-        trial_number += 1
-        print(f'processing trial # {trial_number}...')
-
-        sigma_x, sigma_y = (0.1, 0.1)  # width of the 2-D gaussian-Y
-        alpha = 0.5  # transparency for the heatmap
-        w, h = np.meshgrid(np.linspace(0, scn_w, scn_w),
-                           np.linspace(0, scn_h, scn_h))
-        heatmap = 0.0*np.exp(-1.0*(w - 0)**2/(2*sigma_x**2) -
-                             1.0*(h - 0)**2/(2*sigma_y**2))
-
-    if trial_start:
-        if re.search('^EFIX', line):  # add fixation summary data to efix
-            # EFIX R 80790373 80790527 155 855.5 596.0 881 63.60 63.75
-            start_t, end_t, duration, gaze_x, gaze_y,\
-                     peak_vel, sigma_x, sigma_y = tmp_data
-            heatmap += duration*np.exp(-1.0*(w - gaze_x)**2/(2*sigma_x**2) -
-                                       1.0*(h - gaze_y)**2/(2*sigma_y**2))
-
-        # Get background image from the .VCL file
-        if re.search('DRAW_LIST', line):
-            # MSG 80790106 -3 !V DRAW_LIST ../../runtime/dataviewer/
-            # zw/graphics/VC_1.vcl
-            vcl = open(edf_dir + line.split()[-1], 'r')
-            for draw_commands in vcl:
-                if 'IMGLOAD' in draw_commands:
-                    # 0 IMGLOAD TOP_LEFT  ../../runtime/images/
-                    # 5495090083862704888.png 0 0 1920 1080
-                    # get the path to the .png image
-                    bg_image = draw_commands.split()[3]
-            vcl.close()  # close VCL file
-
-    if re.search('blank_screen', line):  # message marking image offset
-        background_pic = Image.open(edf_dir + bg_image).convert('RGBA')
-        # Apply a colormap (from the colormap library in MatplotLib)
-        heatmap = heatmap/np.max(heatmap)
-        heatmap = Image.fromarray(np.uint8(cm.seismic(heatmap)*255))
-        heatmap = heatmap.convert('RGBA')
-        heatmap = Image.blend(background_pic, heatmap, alpha)  # blending
-        # Save the heatmap as an PNG file
-        heatmap.save(f'heatmap_trial_{trial_number}.png', 'PNG')
-        trial_start = False
-
-asc.close()  # close the ASC file
+#!/usr/bin/env python3## Filename: heatmap_simple.py# Author: Zhiguo Wang# Date: 2/8/2021## Description:# Extract fixations from the ASC file to create a heatmapimport osimport refrom PIL import Image, ImageOpsimport numpy as npfrom matplotlib import cm  # colormap from matplotlibcmd = 'edf2asc freeview/freeview.edf'os.popen(cmd).read()# open the converted ASC fileasc = open('freeview/freeview.asc', 'r')alpha = 0.5  # transparency for the heatmaptrial_start = Falsetrial_number = 0scn_w, scn_h = [-32768, -32768]for line in asc:    # Extract all numerical values from a data line    values = [float(x) for x in re.findall(r'-?\d+\.?\d*', line)]    # Get the correct screen resolution from the GAZE_COORDS message    # MSG	4302897 DISPLAY_COORDS 0 0 1279 799    if re.search('DISPLAY_COORDS', line):        scn_w = int(values[-2]) + 1        scn_h = int(values[-1]) + 1    # message marking image onset    if re.search('image_onset', line):          trial_start = True        trial_number += 1        print(f'processing trial # {trial_number}...')        # creat a meshgrid to construct the heatmap        w, h = np.meshgrid(np.linspace(0, scn_w, scn_w),                           np.linspace(0, scn_h, scn_h))        heatmap = np.exp(-w**2 - h**2) * 0    if trial_start:        if re.search('EFIX R', line):            # EFIX R 80790373 80790527 155 855.5 596.0 881 63.60 63.75            start_t, end_t, duration, x, y, peak_vel, res_x, res_y = values                        # add the new fixation to the heatmap            heatmap += duration * np.exp(-1.0*(w - x)**2/(2*res_x**2) -                                         1.0*(h - y)**2/(2*res_y**2))        # Get the path to the background image         # MSG	3558923 !V IMGLOAD FILL images\woods.jpg        if 'IMGLOAD' in line:            bg_image = line.rstrip().split()[-1]    if re.search('image_offset', line):  # a message marking image offset        pic = Image.open(bg_image)        background_pic = pic.resize((scn_w, scn_h))  # resize the image                # Apply a colormap (from the colormap library of MatplotLib)        heatmap = heatmap/np.max(heatmap)        heatmap = Image.fromarray(np.uint8(cm.seismic(heatmap)*255))                # blending        heatmap = Image.blend(background_pic, heatmap, alpha)                # Save the heatmap as an PNG file        heatmap.save(f'heatmap_trial_{trial_number}.png', 'PNG')        trial_start = Falseasc.close()  # close the ASC file

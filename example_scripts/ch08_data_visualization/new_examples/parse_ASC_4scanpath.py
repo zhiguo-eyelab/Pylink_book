@@ -7,7 +7,6 @@
 # Description:
 # Parse the ASC file to extract fixations, then plot the scan path.
 
-import os
 from PIL import Image, ImageDraw
 from math import sqrt
 
@@ -54,7 +53,7 @@ for line in asc:
     # Message marking image offset
     if 'image_offset' in line:
         # Open the image and resize it to fill up the screen
-        bg = Image.open(os.path.join('freeview', bg_image))
+        bg = Image.open(os.path.join('freeview', 'images/woods.jpg'))
         bg = bg.resize((scn_w, scn_h))
 
         # create a ImageDraw object
