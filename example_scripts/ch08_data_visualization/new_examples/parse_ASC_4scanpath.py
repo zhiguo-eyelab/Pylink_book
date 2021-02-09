@@ -2,62 +2,61 @@
 #
 # Filename: parse_ASC_4scanpath.py
 # Author: Zhiguo Wang
-# Date: 2/8/2021
+# Date: 2/9/2021
 #
 # Description:
-# Parse the ASC file to extract fixations, then plot the scan path.
+# Parse an ASC file to extract fixations, then plot the scan path.
 
+import os
 from PIL import Image, ImageDraw
 from math import sqrt
 
 # Open the converted ASC file
 asc = open(os.path.join('freeview', 'freeview.asc'))
 
-trial_start = False
-trial_number = 0
+new_trial = False
+trial = 0
 for line in asc:
     # Convert the current data line into a list
     tmp_data = line.rstrip().split()
 
-    # Get screen resolution from the GAZE_COORDS message
-    # MSG	4302897 GAZE_COORDS 0.00 0.00 1279.00 799.00
-    if 'GAZE_COORDS' in line:
-        scn_w = int(float(tmp_data[-2]) + 1)
-        scn_h = int(float(tmp_data[-1]) + 1)
+    # Get the correct screen resolution from the GAZE_COORDS message
+    # MSG	4302897 DISPLAY_COORDS 0 0 1279 799
+    if 'DISPLAY_COORDS' in line:
+        scn_w = int(tmp_data[-2]) + 1
+        scn_h = int(tmp_data[-1]) + 1
 
-    # Message marking image onset
+    # Look for the message marking image onset
     if 'image_onset' in line:
-        trial_start = True
-        trial_number += 1
-        bg_image = None
-        # Store the position of all fixations in a list
+        new_trial = True
+        trial += 1
+        print(f'Processing trial # {trial} ...')
+
+        # Store the position and duration of all fixations in lists
         fix_coords = []
-        # Store the duration of all fixations in a list
         fix_duration = []
-        print(f'Processing trial # {trial_number} ...')
 
-    if trial_start:
-        # Get background image path
-        # MSG	3558923 !V IMGLOAD FILL images\woods.jpg
+    if new_trial:
+        # Path to the background image
+        # MSG	3558923 !V IMGLOAD FILL images/woods.jpg
         if 'IMGLOAD' in line:
-           bg_image = line.rstrip().split()[-1]
+            bg_image = tmp_data[-1]
 
-        # Retrieve the coordinates and duration of all fixation
-        # retrieve events from the right eye recording only
+        # Retrieve the coordinates and duration of all fixations
         # EFIX R 80790054 80790349 296 981.3 554.5 936 63.50 63.50
-        if 'EFIX R' in line:
+        if 'EFIX' in line:
            duration, x, y = [int(float(x)) for x in tmp_data[4:7]]
            fix_coords.append((x, y))
            fix_duration.append(duration)
 
-    # Message marking image offset
+    # Look for the message marking image offset, draw the scan path
     if 'image_offset' in line:
         # Open the image and resize it to fill up the screen
-        bg = Image.open(os.path.join('freeview', 'images/woods.jpg'))
-        bg = bg.resize((scn_w, scn_h))
+        img = os.path.join('freeview', bg_image)
+        pic = Image.open(img).resize((scn_w, scn_h))
 
-        # create a ImageDraw object
-        draw = ImageDraw.Draw(bg)
+        #Create an ImageDraw object
+        draw = ImageDraw.Draw(pic)
 
         # Draw the scan path
         draw.line(fix_coords, fill=(0, 0, 255), width=2)
@@ -70,7 +69,7 @@ for line in asc:
                         fill=(255, 255, 0), outline=(0, 0, 255))
 
         # Save the scanpath for each trial
-        bg.save(f'trial_{trial_number}.png', 'PNG')
+        pic.save(f'scanpath_trial_{trial}.png', 'PNG')
 
 # Close the ASC file
 asc.close()
