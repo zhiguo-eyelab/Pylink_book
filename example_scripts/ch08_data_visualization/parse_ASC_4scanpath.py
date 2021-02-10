@@ -2,80 +2,74 @@
 #
 # Filename: parse_ASC_4scanpath.py
 # Author: Zhiguo Wang
-# Date: 2/8/2021
+# Date: 2/9/2021
 #
 # Description:
-# Parse the ASC file to extract fixations, then plot the scan path.
+# Parse an ASC file to extract fixations, then plot the scan path.
 
 import os
 from PIL import Image, ImageDraw
 from math import sqrt
 
-# Path to the EDF data file
-edf_dir = 'Picture/results/zw/'
-
 # Open the converted ASC file
-asc = open(edf_dir + 'zw.asc', 'r')
+asc = open(os.path.join('freeview', 'freeview.asc'))
 
-trial_start = False
-trial_number = 0
+new_trial = False
+trial = 0
 for line in asc:
     # Convert the current data line into a list
-    tmp_data = line.split()
+    tmp_data = line.rstrip().split()
 
-    # Get screen resolution
-    if 'GAZE_COORDS' in line:
-        scn_w, scn_h = [int(float(x)) + 1 for x in tmp_data[-2:]]
+    # Get the correct screen resolution from the DISPLAY_COORDS message
+    # MSG	4302897 DISPLAY_COORDS 0 0 1279 799
+    if 'DISPLAY_COORDS' in line:
+        scn_w = int(tmp_data[-2]) + 1
+        scn_h = int(tmp_data[-1]) + 1
 
-    # Message marking image onset
-    if 'SYNCTIME' in line:
-        trial_start = True
-        trial_number += 1
-        bg_image = None
-        # Store all fixations in a list
-        fixations = []
-        # Store all fixation durations in a list
+    # Look for the message marking image onset
+    if 'image_onset' in line:
+        new_trial = True
+        trial += 1
+        print(f'Processing trial # {trial} ...')
+
+        # Store the position and duration of all fixations in lists
+        fix_coords = []
         fix_duration = []
-        print(f'Processing trial # {trial_number} ...')
 
-    if trial_start:
-        # Get background image from the .VCL file
-        # MSG 80790106 -3 !V DRAW_LIST ../../runtime/
-        # dataviewer/zw/graphics/VC_1.vcl
-        if 'DRAW_LIST' in line:
-            # Open the VCL file
-            vcl = open(edf_dir + tmp_data[-1], 'r')
-            for draw_commands in vcl:
-                # Looking for the IMGLOAD command
-                # MSG 0 IMGLOAD TOP_LEFT  ../../runtime/images/
-                # 5495090083862704888.png 0 0 1920 1080
-                if 'IMGLOAD' in draw_commands:
-                    tmp_list = draw_commands.split()
-                    bg_image = [s for s in tmp_list if 'png' in s][0]
-            # Close the VCL file
-            vcl.close()
+    if new_trial:
+        # Path to the background image
+        # MSG	3558923 !V IMGLOAD FILL images/woods.jpg
+        if 'IMGLOAD' in line:
+            bg_image = tmp_data[-1]
 
-        # Retrieve the coordinates and duration of all fixation
+        # Retrieve the coordinates and duration of all fixations
         # EFIX R 80790054 80790349 296 981.3 554.5 936 63.50 63.50
         if 'EFIX' in line:
             duration, x, y = [int(float(x)) for x in tmp_data[4:7]]
-            fixations.append((x, y))
+            fix_coords.append((x, y))
             fix_duration.append(duration)
 
-    # Message marking image offset
-    if 'blank_screen' in line:
-        bg = Image.open(edf_dir + bg_image)
-        bg = bg.resize((scn_w, scn_h))
-        draw = ImageDraw.Draw(bg)
+    # Look for the message marking image offset, draw the scan path
+    if 'image_offset' in line:
+        # Open the image and resize it to fill up the screen
+        img = os.path.join('freeview', bg_image)
+        pic = Image.open(img).resize((scn_w, scn_h))
+
+        # Create an ImageDraw object
+        draw = ImageDraw.Draw(pic)
+
         # Draw the scan path
-        draw.line(fixations, fill=(0, 0, 255), width=3)
-        # Draw circles to represent the duration of the fixation
+        draw.line(fix_coords, fill=(0, 0, 255), width=2)
+
+        # Draw circles to represent the fixations
         for i, d in enumerate(fix_duration):
-            sz = sqrt(d/max(fix_duration)*256)
-            gx, gy = fixations[i]
-            draw.ellipse([(gx-sz, gy-sz), (gx+sz, gy+sz)], fill=(0, 0, 255))
+            sz = sqrt(d / max(fix_duration) * 256)
+            gx, gy = fix_coords[i]
+            draw.ellipse([gx-sz, gy-sz, gx+sz, gy+sz],
+                         fill=(255, 255, 0), outline=(0, 0, 255))
+
         # Save the scanpath for each trial
-        bg.save(f'trial_{trial_number}.png', 'PNG')
+        pic.save(f'scanpath_trial_{trial}.png', 'PNG')
 
 # Close the ASC file
 asc.close()

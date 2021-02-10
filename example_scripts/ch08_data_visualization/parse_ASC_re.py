@@ -11,34 +11,31 @@ import os
 import re
 import pandas as pd
 
-# Path to the EDF data file
-edf_dir = 'Picture/results/zw/'
-# Convert the edf file
-os.system('edf2asc -e -y %s' % (edf_dir + 'zw.edf'))
-# Open converted ASC file
-asc = open(edf_dir + 'zw.asc', 'r')
+# Open the converted ASC file
+asc = open(os.path.join('freeview', 'freeview.asc'))
 
-efix = []  # fixation end
-esac = []  # saccade end
+efix = []  # fixation end events
+esac = []  # saccade end events
 for line in asc:
     # Extract all numbers and put it in a list
     tmp_data = [float(x) for x in re.findall(r'-?\d+\.?\d*', line)]
 
-    if re.search('^EFIX', line):
+    # retrieve events parsed from the right eye recording
+    if re.search('^EFIX R', line):
         efix.append(tmp_data)
-    elif re.search('^ESACC', line):
+    elif re.search('^ESACC R', line):
         esac.append(tmp_data)
     else:
         pass
 
 # Put the extracted data into pandas data frames
 # EFIX R 80790054 80790349 296 981.3 554.5 936
-efixFRM = pd.DataFrame(efix, columns=['startT', 'endT', 'duration',
-                                      'avgX', 'avgY', 'pupil'])
+efix_colname = ['startT', 'endT', 'duration', 'avgX', 'avgY', 'pupil']
+efixFRM = pd.DataFrame(efix, columns=efix_colname)
 # ESACC R 80790350 80790372 23 982.6 551.8 864.9 587.9 1.94 151
-esacFRM = pd.DataFrame(esac, columns=['startT', 'endT', 'duration',
-                                      'startX', 'startY', 'endX',
-                                      'endY', 'amplitude', 'peakVel'])
+esac_colname = ['startT', 'endT', 'duration', 'startX', 'startY',
+                'endX', 'endY', 'amplitude', 'peakVel']
+esacFRM = pd.DataFrame(esac, columns=esac_colname)
 
 # Close the ASC file
 asc.close()
