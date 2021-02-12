@@ -17,15 +17,15 @@ tk = pylink.EyeLink()
 tk.openDataFile('drawing.edf')
 
 # Assume the screen resolution is 1280 x 800 pixels
-SCN_W, SCN_H = (1024, 768)
+SCN_W, SCN_H = (1280, 800)
 
 # Pass the screen coordinates to the tracker
 coords = f'screen_pixel_coords = 0 0 {SCN_W - 1} {SCN_H - 1}'
 tk.sendCommand(coords)
 
-# Record a DISPLAY_SCREEN message to let Data Viewer know the
+# Record a DISPLAY_COORDS message to let Data Viewer know the
 # correct screen resolution to use when visualizing the data
-tk.sendMessage('DISPLAY_SCREEN 0 0 {SCN_W - 1} {SCN_H - 1}')
+tk.sendMessage(f'DISPLAY_COORDS 0 0 {SCN_W - 1} {SCN_H - 1}')
 
 # Run through five trials
 for trial in range(1, 6):

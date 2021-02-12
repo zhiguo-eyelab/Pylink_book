@@ -60,7 +60,7 @@ pylink.openGraphicsEx(graphics)
 target = visual.GratingStim(win, tex=None, mask='circle', size=25)
 pursuitClock = core.Clock()
 
-# Paramters for the Sinusoidal movement pattern
+# Parameters for the Sinusoidal movement pattern
 # [amp_x, amp_y, phase_x, phase_y, angular_freq_x, angular_freq_y]
 mov_pars = [
     [300, 300, pi*3/2, 0, 2*pi/8, 2*pi/8],
@@ -83,12 +83,12 @@ def run_trial(trial_duration, movement_pars):
     """ Run a smooth pursuit trial
 
     trial_duration: the duration of the pursuit movement
-    movement_pars: [ amp_x, amp_y, phase_x, phase_y, freq_x, freq_y]
+    movement_pars: [amp_x, amp_y, phase_x, phase_y, freq_x, freq_y]
     The Sinusoidal movement pattern is determined by the following equation
     y(t) = amplitude * sin(frequency * t + phase)
     for a circular or elliptical movements, the phase in x and y directions
-    should be pi/2 (direction matters). Note that angular frequency
-    (radians/sececond) is used in the equation."""
+    should be pi/2 (direction matters). Angular frequency
+    (radians/second) is used in the equation."""
 
     # Parse the movement pattern parameters
     amp_x, amp_y, phase_x, phase_y, freq_x, freq_y = movement_pars
@@ -173,7 +173,7 @@ random.shuffle(test_list)
 for trial in test_list:
     run_trial(8.0, trial)
 
-# Step 9: Downlad EDF file to a local folder ('edfData')
+# Step 9: Download EDF file to a local folder ('edfData')
 msg = 'Downloading EDF file from the EyeLink Host PC ...'
 edf = visual.TextStim(win, text=msg, color='white')
 edf.draw()

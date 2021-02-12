@@ -67,8 +67,8 @@ tk.doTrackerSetup()
 # Step 6: Run through a couple of trials
 # put the videos we would like to play in a list
 trials = [
-    ['t1', 'Seoul.mp4'],
-    ['t2', 'Seoul.mp4']
+    ['t1', 'driving.mov'],
+    ['t2', 'driving.mov']
     ]
 
 
@@ -122,7 +122,7 @@ def run_trial(pars):
         if current_frame_timestamp != prev_frame_timestamp:
             frame_n += 1
             # send a message to mark the onset of each video frame
-            tk.sendMessage('Video_Frame: {frame_n}')
+            tk.sendMessage(f'Video_Frame: {frame_n}')
             # VFRAME message: "!V VFRAME frame_num movie_pos_x,
             # movie_pos_y, path_to_movie_file"
             x = int(SCN_W/2 - mo_width/2)
@@ -151,7 +151,7 @@ random.shuffle(test_list)
 for trial in test_list:
     run_trial(trial)
 
-# Step 7: Close the EDF data file and put the tracker in idle mode
+# Step 7: Close the EDF data file
 pylink.pumpDelay(100)  # wait for 100 ms to catch session end events
 tk.closeDataFile()
 

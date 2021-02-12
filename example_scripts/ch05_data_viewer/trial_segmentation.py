@@ -6,7 +6,7 @@
 #
 # Description:
 # This script illustrates the TRIALID and TRIAL_RESULT messages
-# that Data Viewer uses to segment recording into trials
+# that Data Viewer uses to segment a recording into trials
 
 import pylink
 

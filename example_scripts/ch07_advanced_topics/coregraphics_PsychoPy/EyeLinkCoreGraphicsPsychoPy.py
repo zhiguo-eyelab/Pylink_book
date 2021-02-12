@@ -126,7 +126,7 @@ class EyeLinkCoreGraphicsPsychoPy(pylink.EyeLinkCustomDisplay):
         self._display.flip()
 
     def play_beep(self, beepid):
-        ''' Play a sound during calibration/drift correct.'''
+        ''' Play a sound during calibration/drift-correction.'''
 
         if beepid in [pylink.CAL_TARG_BEEP, pylink.DC_TARG_BEEP]:
             self._target_beep.play()
@@ -251,7 +251,7 @@ class EyeLinkCoreGraphicsPsychoPy(pylink.EyeLinkCustomDisplay):
             elif k == pylink.JUNK_KEY:
                 k = 0
 
-            # plus/equal & minux signs for CR adjustment
+            # plus & minus signs for CR adjustment
             if keycode in ['num_add', 'equal']:
                 k = ord('+')
             if keycode in ['num_subtract', 'minus']:

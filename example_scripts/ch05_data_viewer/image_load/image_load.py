@@ -23,9 +23,9 @@ SCN_W, SCN_H = (1280, 800)
 coords = f"screen_pixel_coords = 0 0 {SCN_W - 1} {SCN_H - 1}"
 tk.sendCommand(coords)
 
-# Record a DISPLAY_SCREEN message to let Data Viewer know the
+# Record a DISPLAY_COORDS message to let Data Viewer know the
 # correct screen resolution to use when visualizing the data
-tk.sendMessage(f'DISPLAY_SCREEN 0 0 {SCN_W - 1} {SCN_H - 1}')
+tk.sendMessage(f'DISPLAY_COORDS 0 0 {SCN_W - 1} {SCN_H - 1}')
 
 # Run through five trials
 for trial in range(1, 6):

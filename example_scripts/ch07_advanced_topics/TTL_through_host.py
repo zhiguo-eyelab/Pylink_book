@@ -42,7 +42,7 @@ for i in range(201, 209):
     pylink.pumpDelay(1000)
 
 # Using the Host 'write_ioport' command to send TTLs
-# The "*" in the command request the Host to log the command
+# The "*" in the command request the Host to log the command in
 # the EDF data file
 
 # Clear the Data Register

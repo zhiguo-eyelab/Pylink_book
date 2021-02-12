@@ -26,7 +26,7 @@ tk.sendCommand("add_file_preamble_text 'Stroop task demo'")
 
 # Step 3: Set up tracking parameters
 #
-# put the tracker in idle mode before we change its parameters
+# Put the tracker in idle mode before we change its parameters
 tk.setOfflineMode()
 
 # Sample rate, 250, 500, 1000, or 2000 (does not support EyeLInk II/I)
@@ -55,7 +55,7 @@ graphics = EyeLinkCoreGraphicsPsychoPy(tk, win)
 pylink.openGraphicsEx(graphics)
 
 # Step 5: calibrate the tracker, and run through all the trials
-calib_prompt = "LEFT to RED\n\nRIGHT to BLEU\n\nPress ENTER to calibrate"
+calib_prompt = "Press LEFT to RED\nRIGHT to BLEU\n\n ENTER to calibrate"
 calib_msg = visual.TextStim(win, text=calib_prompt, color='white')
 calib_msg.draw()
 win.flip()
@@ -64,7 +64,8 @@ win.flip()
 tk.doTrackerSetup()
 
 # Step 6: Run through all the trials
-# specify all possible experimental trials the columns are
+#
+# Specify all possible experimental trials in a list; the columns are
 # 'text', 'text_color', 'correct_answer' and "congruency"
 my_trials = [
     ['red',   'red',  'left',  'cong'],
@@ -75,7 +76,7 @@ my_trials = [
 
 
 # For convenience, define a run_trial function to group
-# the lines of code executed in each trial
+# the lines of code repeatedly executed in each trial
 def run_trial(params):
     """ Run a single trial
 
@@ -132,7 +133,7 @@ def run_trial(params):
     # Data Viewer knows the correct onset time of the screen
     msg_offset = int((core.getTime() - tar_onset) * 1000)
     # Send an IMGLOAD message to let DV know which screenshot to load
-    scn_shot = os.path.join('..', screenshot)
+    scn_shot = '../' + screenshot
     tk.sendMessage(f'{msg_offset} !V IMGLOAD FILL {scn_shot}')
 
     # Clear bufferred events (in PsychoPy), then wait for key presses
@@ -176,7 +177,7 @@ random.shuffle(trials_to_test)
 for trial in trials_to_test:
     run_trial(trial)
 
-# Step 7: Close the EDF data file and put the tracker in idle mode
+# Step 7: Close the EDF data file
 pylink.pumpDelay(100)  # wait for 100 ms to catch session end events
 tk.closeDataFile()
 

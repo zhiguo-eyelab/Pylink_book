@@ -41,7 +41,7 @@ genv = EyeLinkCoreGraphicsPsychoPy(tk, win)
 pylink.openGraphicsEx(genv)
 
 # Calibrate the tracker
-calib_msg = visual.TextStim(win, text='Press ENTER twice to calibrate')
+calib_msg = visual.TextStim(win, text='Press ENTER to calibrate')
 calib_msg.draw()
 win.flip()
 tk.doTrackerSetup()
