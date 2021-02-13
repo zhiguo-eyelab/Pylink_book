@@ -32,7 +32,6 @@ def waitKey():
 for i in range(10):
     win.color = (i % 2 * 1.0, -1, -1)
     win.flip()
-    kb.clearEvents()
     kb.clock.reset()  # reset the clock
     waitKey()
     

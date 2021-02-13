@@ -34,7 +34,7 @@ tk.setOfflineMode()
 tk.sendCommand("sample_rate 1000")
 
 # Send screen resolution to the tracker
-tk.sendCommand(f"screen_pixel_coords = 0 0 {SCN_W-1} {SCN_H-1}")
+tk.sendCommand(f'screen_pixel_coords = 0 0 {SCN_W-1} {SCN_H-1}')
 
 # Record a DISPLAY_SCREEN message to let Data Viewer know the
 # correct screen resolution to use when visualizing the data

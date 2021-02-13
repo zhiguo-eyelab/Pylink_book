@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 # Convert EDFs to ASC files with the edf2asc command-line tool
 # If you run this script from IDLE on macOS, be sure to launch IDLE
 # from the command-line (e.g., enter "idle3.6" in the terminal)
-cmd = 'edf2asc -s -y freeview/freeview.edf'
+cmd = 'edf2asc -y freeview/freeview.edf'
 os.system(cmd)
 
 # Open the converted ASC file
@@ -30,7 +30,7 @@ for line in asc:
     values = [float(x) for x in re.findall(r'-?\d+\.?\d*', line)]
 
     # Look for the message marking image onset
-    if re.search('image_onset', line):
+    if 'image_onset' in line:
         new_trial = True
         trial += 1
         print(f'processing trial # {trial}...')
@@ -47,7 +47,7 @@ for line in asc:
         else:  # sample line with missing values (e.g., tracking loss)
             tmp_DF.append([values[0], np.nan, np.nan, np.nan])
 
-    if re.search('image_offset', line):  # message marking image offset
+    if 'image_offset' in line:  # message marking image offset
         # Put samples in a pandas data frame and store it in trial_DFs
         colname = ['timestamp', 'gaze_x', 'gaze_y', 'pupil']
         trial_DFs[trial] = pd.DataFrame(tmp_DF, columns=colname)

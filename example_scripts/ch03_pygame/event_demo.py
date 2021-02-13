@@ -1,10 +1,13 @@
+#!/usr/bin/env python3
+#
 # Filename: event_demo.py
 # Author: Zhiguo Wang
-# Date: 11/7/2020
+# Date: 2/7/2021
 #
 # Description:
 # A short script showing how to handle Pygame events
 
+import sys
 import pygame
 from pygame.locals import *
 
@@ -31,3 +34,4 @@ while True:
         # Quit Pygame if the "close window" button is pressed
         if ev.type == QUIT:
             pygame.quit()
+            sys.exit()

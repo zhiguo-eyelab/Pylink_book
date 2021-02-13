@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+#
 # Filename: display_demo.py
 # Author: Zhiguo Wang
-# Date: 11/11/2020
+# Date: 2/11/2021
 #
 # Description:
 # Open an widnow to assess monitor refresh consistency
@@ -12,7 +14,8 @@ from pygame.locals import *
 pygame.init()
 
 # Open a window
-win = pygame.display.set_mode((1024, 768), DOUBLEBUF | HWSURFACE | FULLSCREEN)
+scn_res = pygame.display.list_modes()[0]
+win = pygame.display.set_mode(scn_res, DOUBLEBUF | HWSURFACE | FULLSCREEN)
 
 # An empty list to store the monitor refresh intervals
 intv = []
@@ -24,7 +27,7 @@ pygame.display.flip()
 t_before_flip = pygame.time.get_ticks()
 
 # Use a for-loop to flip the video buffer for 200 times
-for i in range(100):
+for i in range(200):
     # Switching the window color between black and white
     if i % 2 == 0:
         win.fill((255, 255, 255))

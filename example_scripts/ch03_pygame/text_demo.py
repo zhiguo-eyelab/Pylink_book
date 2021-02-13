@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+#
 # Filename: text_demo.py
 # Author: Zhiguo Wang
-# Date: 11/7/2020
+# Date: 2/7/2021
 #
 # Description:
 # Text rendering example in Pygame

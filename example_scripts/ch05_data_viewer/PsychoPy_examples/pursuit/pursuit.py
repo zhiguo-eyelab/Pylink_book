@@ -49,7 +49,7 @@ tk.sendCommand("calibration_type = HV9")
 customMon = monitors.Monitor('demoMon', width=35, distance=65)
 
 # Open a PsychoPy window
-win = visual.Window((SCN_W, SCN_H), fullscr=True,
+win = visual.Window((SCN_W, SCN_H), fullscr=False,
                     monitor=customMon, units='pix')
 
 # Request Pylink to use the PsychoPy window for calibration
