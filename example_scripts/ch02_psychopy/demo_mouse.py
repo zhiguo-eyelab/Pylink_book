@@ -41,7 +41,7 @@ traj = [mouse.getPos()]
 
 # In a while loop, check if the "yes" or "no" circle has been clicked
 while not (mouse.isPressedIn(circle_no) or mouse.isPressedIn(circle_yes)):
-    # Following a mouse position change, add the new mouse position to 'traj'
+    # Following a position change, add the new mouse position to 'traj'
     if mouse.mouseMoved():
         traj.append(mouse.getPos())
 

@@ -43,19 +43,19 @@ def draw_frame(frame, trial_pars):
     trial_pars -- parameters, [cue_pos, tar_pos, isti, cueing, cor_key]'''
 
     # Unpack the trial parameters
-    cue_pos, tar_pos, itiisi, cueing, cor_key = trial_pars
+    cue_pos, tar_pos, isi, cueing, cor_key = trial_pars
 
-    # Clear the screen and fill it with black color
+    # Clear the screen and fill it with black
     win.fill(colors['black'])
 
     # The place holders are visible on all screens
-    # Draw placeholders at three screen positions. Here, 'pos' is a dictionary;
+    # Here, 'pos' is a dictionary;
     # we retrieve both the key and value pairs in a for-loop
     for key, (x, y) in pos.items():
         # Draw the place holder
         draw.rect(win, colors['gray'], Rect(x - sz/2, y - sz/2, sz, sz), 1)
 
-        # The fixation is visible on all screens
+        # The fixation cross is visible on all screens
         if key == 'center':
             draw.line(win, colors['gray'], (x - 20, y), (x + 20, y), 3)
             draw.line(win, colors['gray'], (x, y - 20), (x, y + 20), 3)
