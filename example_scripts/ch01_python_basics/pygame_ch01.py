@@ -7,6 +7,7 @@ pygame.init()
 win = pygame.display.set_mode((400,300))
 
 # Draw a circle
+win.fill((0,0,0))
 pygame.draw.circle(win, (255,0,0), (200,150), 30)
 pygame.display.flip()
 
