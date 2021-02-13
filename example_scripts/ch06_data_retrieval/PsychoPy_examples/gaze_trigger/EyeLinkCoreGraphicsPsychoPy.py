@@ -8,6 +8,8 @@
 # An EyeLink coregraphics library (calibration routine)
 # for PsychoPy experiments.
 
+import os
+import platform
 import array
 import string
 import pylink
@@ -37,6 +39,14 @@ class EyeLinkCoreGraphicsPsychoPy(pylink.EyeLinkCustomDisplay):
 
         # display width & height
         self._w, self._h = win.size
+
+        # resolution fix for Mac retina displays
+        if 'Darwin' in platform.system():
+            sys_cmd = 'system_profiler SPDisplaysDataType | grep Retina'
+            is_ret = os.system(sys_cmd)
+            if is_ret == 0:
+                self._w = int(self._w / 2.0)
+                self._h = int(self._h / 2.0)
 
         # store camera image pixels in an array
         self._imagebuffer = array.array('I')
@@ -116,7 +126,7 @@ class EyeLinkCoreGraphicsPsychoPy(pylink.EyeLinkCustomDisplay):
         self._display.flip()
 
     def play_beep(self, beepid):
-        ''' Play a sound during calibration/drift correct.'''
+        ''' Play a sound during calibration/drift-correction.'''
 
         if beepid in [pylink.CAL_TARG_BEEP, pylink.DC_TARG_BEEP]:
             self._target_beep.play()
@@ -241,7 +251,7 @@ class EyeLinkCoreGraphicsPsychoPy(pylink.EyeLinkCustomDisplay):
             elif k == pylink.JUNK_KEY:
                 k = 0
 
-            # plus/equal & minux signs for CR adjustment
+            # plus & minus signs for CR adjustment
             if keycode in ['num_add', 'equal']:
                 k = ord('+')
             if keycode in ['num_subtract', 'minus']:

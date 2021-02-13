@@ -67,8 +67,8 @@ tk.doTrackerSetup()
 # Step 6: Run through a couple of trials
 # put the videos we would like to play in a list
 trials = [
-    ['t1', 'driving.mov'],
-    ['t2', 'driving.mov']
+    ['t1', 'driving.mp4'],
+    ['t2', 'driving.mp4']
     ]
 
 
