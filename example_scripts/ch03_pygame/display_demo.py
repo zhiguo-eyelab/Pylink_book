@@ -13,8 +13,10 @@ from pygame.locals import *
 # Initialize Pygame & its modules
 pygame.init()
 
-# Open a window
+# Get the native resolution supported by the monitor
 scn_res = pygame.display.list_modes()[0]
+
+# Open a window
 win = pygame.display.set_mode(scn_res, DOUBLEBUF | HWSURFACE | FULLSCREEN)
 
 # An empty list to store the monitor refresh intervals

@@ -30,7 +30,7 @@ for line in asc:
     values = [float(x) for x in re.findall(r'-?\d+\.?\d*', line)]
 
     # Look for the message marking image onset
-    if 'image_onset' in line:
+    if re.search('image_onset', line):
         new_trial = True
         trial += 1
         print(f'processing trial # {trial}...')
@@ -47,7 +47,7 @@ for line in asc:
         else:  # sample line with missing values (e.g., tracking loss)
             tmp_DF.append([values[0], np.nan, np.nan, np.nan])
 
-    if 'image_offset' in line:  # message marking image offset
+    if re.search('image_offset', line):  # message marking image offset
         # Put samples in a pandas data frame and store it in trial_DFs
         colname = ['timestamp', 'gaze_x', 'gaze_y', 'pupil']
         trial_DFs[trial] = pd.DataFrame(tmp_DF, columns=colname)
