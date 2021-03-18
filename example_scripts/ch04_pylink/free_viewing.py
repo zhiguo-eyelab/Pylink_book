@@ -2,7 +2,7 @@
 #
 # Filename: free_viewing.py
 # Author: Zhiguo Wang
-# Date: 2/7/2020
+# Date: 3/18/2020
 #
 # Description:
 # A free-viewing task implemented in Pygame.
@@ -115,9 +115,6 @@ def run_trial(params):
     # clear the screen
     surf.fill((128, 128, 128))
     pygame.display.flip()
-
-    # clear the host backdrop as well
-    tk.sendCommand('clear_screen 0')
 
     # Log a message to mark image offset
     tk.sendMessage('image_offset')

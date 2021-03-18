@@ -2,7 +2,7 @@
 #
 # Filename: basic_example.py
 # Author: Zhiguo Wang
-# Date: 2/6/2021
+# Date: 3/16/2021
 #
 # Description:
 # A very basic script showing how to connect/disconnect the tracker,
