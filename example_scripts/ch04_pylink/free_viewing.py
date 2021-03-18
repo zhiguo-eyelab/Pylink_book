@@ -17,6 +17,9 @@ from pygame.locals import *
 # Screen resolution
 SCN_W, SCN_H = (1280, 800)
 
+# Initialize Pygame
+pygame.init()
+
 # Step 1: Connect to the tracker
 tk = pylink.EyeLink('100.1.1.1')
 
@@ -40,12 +43,8 @@ tk.sendCommand(f'screen_pixel_coords = 0 0 {SCN_W-1} {SCN_H-1}')
 # correct screen resolution to use when visualizing the data
 tk.sendMessage(f'DISPLAY_COORDS 0 0 {SCN_W - 1} {SCN_H - 1}')
 
-# Request the tracker to perform a 9-point calibration
+# Set the calibration type to 9-point (HV9)
 tk.sendCommand("calibration_type = HV9")
-
-# Calibrate the central 80% of the screen
-tk.sendCommand('calibration_area_proportion 0.8 0.8')
-tk.sendCommand('validation_area_proportion 0.8 0.8')
 
 # Step 4: open a Pygame window; then, call pylink.openGraphics()
 # to request Pylink to use this window for calibration
@@ -70,24 +69,13 @@ def run_trial(params):
     params: image, condition in a list,
     e.g., ['quebec.jpg', 'no_people'] '''
     
-    # Unpacking the picture and correct keypress
-    pic, cor_key = params
+    # Unpacking the trial parameters
+    pic, cond = params
 
     # Load the picture, scale the image to fill up the screen
     pic_path = os.path.join('images', pic)
     img = pygame.image.load(pic_path)
     img = pygame.transform.scale(img, (SCN_W, SCN_H))
-
-    # clear the host screen before we draw a backdrop on the Host PC
-    tk.sendCommand('clear_screen 0')
-
-    # draw the backdrop with the bitmapBackdrop() command, see chapter 7
-    # parameters: width, height, pixel, crop_x, crop_y,
-    #             crop_width, crop_height, x, y on the Host, drawing options
-    pixels = [[img.get_at((i, j))[0:3] for i in range(SCN_W)]
-              for j in range(SCN_H)]
-    tk.bitmapBackdrop(SCN_W, SCN_H, pixels, 0, 0, SCN_W, SCN_H,
-                      0, 0, pylink.BX_MAXCONTRAST)
 
     # Record_status_message: show some info on the Host PC
     tk.sendCommand(f"record_status_message 'Picture: {pic}'")
@@ -137,7 +125,7 @@ def run_trial(params):
     # stop recording
     tk.stopRecording()
 
-# Run through all four trials in a random order
+# Run through the trials in a random order
 random.shuffle(t_pars)
 for trial in t_pars:
     run_trial(trial)
