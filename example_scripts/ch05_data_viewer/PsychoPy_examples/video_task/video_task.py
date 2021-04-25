@@ -73,7 +73,7 @@ trials = [
     ]
 
 
-# Here we define a helper function to group the code executed on each trial
+# Here, we define a helper function to group the code executed on each trial
 def run_trial(pars):
     """ pars corresponds to a row in the trial list"""
 
@@ -94,7 +94,7 @@ def run_trial(pars):
     tk.sendCommand(msg)
 
     # Drift check/correction, params, x, y, draw_target, allow_setup
-    tk.doDriftCorrect(int(SCN_W/2), int(SCN_H/2), 1, 1)
+    tk.doDriftCorrect(int(SCN_W/2.0), int(SCN_H/2.0), 1, 1)
 
     # Put the tracker in idle mode before we start recording
     tk.setOfflineMode()
@@ -126,8 +126,8 @@ def run_trial(pars):
             tk.sendMessage(f'Video_Frame: {frame_n}')
             # VFRAME message: "!V VFRAME frame_num movie_pos_x,
             # movie_pos_y, path_to_movie_file"
-            x = int(SCN_W/2 - mo_width/2)
-            y = int(SCN_H/2 - mo_height/2)
+            x = int(SCN_W/2.0 - mo_width/2.0)
+            y = int(SCN_H/2.0 - mo_height/2.0)
             path_to_movie = os.path.join('..', movie_file)
             msg = f"!V VFRAME {frame_n} {x} {y} {path_to_movie}"
             tk.sendMessage(msg)
@@ -143,7 +143,7 @@ def run_trial(pars):
     # Stop recording
     tk.stopRecording()
 
-    # Send a'TRIAL_RESULT' message to mark the end of trial
+    # Send a'TRIAL_RESULT' message to mark the end of the trial
     tk.sendMessage('TRIAL_RESULT')
 
 # Run a block of 2 trials, in random order

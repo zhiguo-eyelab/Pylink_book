@@ -102,7 +102,7 @@ def run_trial(params):
     tk.sendCommand(msg)
 
     # Drift check/correction, params, x, y, draw_target, allow_setup
-    tk.doDriftCorrect(int(SCN_W/2), int(SCN_H/2), 1, 1)
+    tk.doDriftCorrect(int(SCN_W/2.0), int(SCN_H/2.0), 1, 1)
 
     # Put the tracker in idle mode before we start recording
     tk.setOfflineMode()
@@ -183,7 +183,7 @@ tk.setOfflineMode() # Put tracker in offline mode
 pylink.pumpDelay(100)  # wait for 100 ms
 tk.closeDataFile()
 
-# Step 8: Downlad EDF file to a local folder ('edfData')
+# Step 8: Download EDF file to a local folder ('edfData')
 msg = 'Downloading EDF file from the EyeLink Host PC ...'
 edf = visual.TextStim(win, text=msg, color='white')
 edf.draw()

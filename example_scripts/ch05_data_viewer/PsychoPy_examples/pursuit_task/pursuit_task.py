@@ -84,11 +84,10 @@ def run_trial(trial_duration, movement_pars):
 
     trial_duration: the duration of the pursuit movement
     movement_pars: [amp_x, amp_y, phase_x, phase_y, freq_x, freq_y]
-    The Sinusoidal movement pattern is determined by the following equation
-    y(t) = amplitude * sin(frequency * t + phase)
-    for a circular or elliptical movements, the phase in x and y directions
-    should be pi/2 (direction matters). Angular frequency
-    (radians/second) is used in the equation."""
+    The following equation defines a sinusoidal movement pattern
+    y(t) = amplitude * sin(2 * pi * frequency * t + phase)
+    for circular or elliptical movements, the phase in x and y directions
+    should be pi/2 (direction matters)."""
 
     # Parse the movement pattern parameters
     amp_x, amp_y, phase_x, phase_y, freq_x, freq_y = movement_pars
@@ -108,7 +107,7 @@ def run_trial(trial_duration, movement_pars):
     target.pos = (tar_x, tar_y)
     target.draw()
     win.flip()
-    tk.doDriftCorrect(int(tar_x + SCN_W/2), int(SCN_H/2 - tar_y), 0, 1)
+    tk.doDriftCorrect(int(tar_x + SCN_W/2.0), int(SCN_H/2.0 - tar_y), 0, 1)
 
     # Put the tracker in idle mode before we start recording
     tk.setOfflineMode()
@@ -132,8 +131,8 @@ def run_trial(trial_duration, movement_pars):
             tk.sendMessage('Movement_onset')
             move_start = core.getTime()
         else:
-            _x = int(tar_x + SCN_W/2)
-            _y = int(SCN_H/2 - tar_y)
+            _x = int(tar_x + SCN_W/2.0)
+            _y = int(SCN_H/2.0 - tar_y)
             tar_msg = f'!V TARGET_POS target {_x}, {_y} 1 0'
             tk.sendMessage(tar_msg)
 
@@ -164,7 +163,7 @@ def run_trial(trial_duration, movement_pars):
     tk.sendMessage(f"!V TRIAL_VAR freq_y {freq_y:.2f}")
     tk.sendMessage(f"!V TRIAL_VAR duration {trial_duration:.2f}")
 
-    # Send a 'TRIAL_RESULT' message to mark the end of trial
+    # Send a 'TRIAL_RESULT' message to mark the end of the trial
     tk.sendMessage('TRIAL_RESULT')
 
 # Run a block of 2 trials, in random order
