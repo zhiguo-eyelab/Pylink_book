@@ -30,7 +30,8 @@ tk.sendCommand("add_file_preamble_text 'Movie playback demo'")
 # put the tracker in idle mode before we change its parameters
 tk.setOfflineMode()
 
-# Sample rate, 250, 500, 1000, or 2000 (does not support EyeLInk II/I)
+# Sample rate, 250, 500, 1000, or 2000 (depending on the tracker models, 
+# not all sample rate options are supported)
 tk.sendCommand('sample_rate 500')
 
 # Pass screen resolution  to the tracker

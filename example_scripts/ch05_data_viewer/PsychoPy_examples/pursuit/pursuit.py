@@ -30,8 +30,8 @@ tk.sendCommand("add_file_preamble_text 'Smooth pursuit demo'")
 tk.setOfflineMode()
 pylink.msecDelay(50)
 
-# Sample rate, 250, 500, 1000, or 2000
-# this command does not support EyeLInk II/I
+# Sample rate, 250, 500, 1000, or 2000 (depending on the tracker models, 
+# not all sample rate options are supported)
 tk.sendCommand('sample_rate 500')
 
 # Pass screen resolution  to the tracker
@@ -172,6 +172,11 @@ test_list = mov_pars[:]
 random.shuffle(test_list)
 for trial in test_list:
     run_trial(8.0, trial)
+
+# Step 8: Close the EDF data file and put the tracker in idle mode
+tk.setOfflineMode()  # put the tracker in Offline
+pylink.pumpDelay(100)  # wait for 100 ms 
+tk.closeDataFile()
 
 # Step 9: Download EDF file to a local folder ('edfData')
 msg = 'Downloading EDF file from the EyeLink Host PC ...'

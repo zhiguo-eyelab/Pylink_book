@@ -5,7 +5,7 @@
 # Date: 2/11/2021
 #
 # Description:
-# Open an widnow to assess monitor refresh consistency
+# Open a window to assess monitor refresh consistency
 
 import pygame
 from pygame.locals import *
@@ -28,7 +28,7 @@ pygame.display.flip()
 # Get the timestamp of the 'previous' screen retrace
 t_before_flip = pygame.time.get_ticks()
 
-# Use a for-loop to flip the video buffer for 200 times
+# Use a for-loop to flip the video buffer 200 times
 for i in range(200):
     # Switching the window color between black and white
     if i % 2 == 0:
@@ -47,7 +47,7 @@ for i in range(200):
     # Reset the timestamp of the 'previous' retrace
     t_before_flip = t_after_flip
 
-# Print out the max, min and average refresh intervals
+# Print out the max, min, and average refresh intervals
 intv_max = max(intv)
 intv_min = min(intv)
 intv_avg = sum(intv)*1.0/len(intv)

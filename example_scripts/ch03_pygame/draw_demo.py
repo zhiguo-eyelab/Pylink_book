@@ -41,7 +41,7 @@ while True:
     if len(points) >= 3:
         pygame.draw.polygon(scn, (0, 255, 0), points)
 
-    # Highlight the screen locations that has been clicked
+    # Highlight the screen locations that have been clicked
     for point in points:
         pygame.draw.circle(scn, (0, 0, 255), point, 10)
 

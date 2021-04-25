@@ -41,7 +41,7 @@ for trial in range(1, 6):
     # Assuming an image is presented in the task and we would like
     # to have the same image in the background when visualizing data
     # in Data Viewer
-    tk.sendMessage('!V IMGLOAD FILL {}'.format('woods.jpg'))
+    tk.sendMessage('!V IMGLOAD FILL woods.jpg')
 
     # Pretending that we are doing something for 2-sec
     pylink.pumpDelay(2000)

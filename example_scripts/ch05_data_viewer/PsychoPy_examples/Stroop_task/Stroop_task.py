@@ -29,7 +29,8 @@ tk.sendCommand("add_file_preamble_text 'Stroop task demo'")
 # Put the tracker in idle mode before we change its parameters
 tk.setOfflineMode()
 
-# Sample rate, 250, 500, 1000, or 2000 (does not support EyeLInk II/I)
+# Sample rate, 250, 500, 1000, or 2000 (depending on the tracker models, 
+# not all sample rate options are supported)
 tk.sendCommand('sample_rate 500')
 
 # Pass screen resolution  to the tracker
@@ -152,7 +153,7 @@ def run_trial(params):
             tk.sendMessage(f"Key_resp {key_pressed}")
             gotKey = True
 
-    # Clear the window at the end of a trials2Test
+    # Clear the window at the end of a trials
     win.color = (0, 0, 0)
     win.flip()
 
@@ -178,7 +179,8 @@ for trial in trials_to_test:
     run_trial(trial)
 
 # Step 7: Close the EDF data file
-pylink.pumpDelay(100)  # wait for 100 ms to catch session end events
+tk.setOfflineMode() # Put tracker in offline mode
+pylink.pumpDelay(100)  # wait for 100 ms
 tk.closeDataFile()
 
 # Step 8: Downlad EDF file to a local folder ('edfData')

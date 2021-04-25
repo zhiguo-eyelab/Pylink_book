@@ -49,7 +49,7 @@ while len(trial_list) > 0:
     # run a single trial
     should_recycle = run_trial(trial_to_test)
 
-    # add the trial back to the the trial_list if the
+    # add the trial back to the trial_list if the
     # return value is True (i.e., need to recycle)
     if  should_recycle:
         trial_list.append(trial_to_test)
