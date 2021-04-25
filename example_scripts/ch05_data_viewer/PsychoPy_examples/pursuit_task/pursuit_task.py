@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Filename: pursuit.py
+# Filename: pursuit_task.py
 # Author: Zhiguo Wang
 # Date: 2/6/2021
 #
@@ -63,8 +63,8 @@ pursuitClock = core.Clock()
 # Parameters for the Sinusoidal movement pattern
 # [amp_x, amp_y, phase_x, phase_y, angular_freq_x, angular_freq_y]
 mov_pars = [
-    [300, 300, pi*3/2, 0, 2*pi/8, 2*pi/8],
-    [300, 300, pi/2, 0, 2*pi/8, 2*pi/8]
+    [300, 300, pi*3/2, 0, 1/8.0, 1/8.0],
+    [300, 300, pi/2, 0, /8.0, 1/8.0]
     ]
 
 # Step 6: calibrate the tracker
@@ -140,8 +140,8 @@ def run_trial(trial_duration, movement_pars):
         time_elapsed = flip_time - move_start
 
         # update the target position
-        tar_x = amp_x*sin(freq_x * time_elapsed + phase_x)
-        tar_y = amp_y*sin(freq_y * time_elapsed + phase_y)
+        tar_x = amp_x*sin(2 * pi * freq_x * time_elapsed + phase_x)
+        tar_y = amp_y*sin(2 * pi * freq_y * time_elapsed + phase_y)
 
         # break if the time elapsed exceeds the trial duration
         if time_elapsed > trial_duration:
