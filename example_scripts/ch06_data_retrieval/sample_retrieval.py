@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Filename: link_samples.py
+# Filename: sample_retrieval.py
 # Author: Zhiguo Wang
 # Date: 2/6/2021
 #
@@ -37,7 +37,7 @@ tk.setOfflineMode()
 # Start recording
 error = tk.startRecording(1, 1, 1, 1)
 
-# Cache some samples for event parsing
+# Wait for moment
 pylink.msecDelay(100)
 
 # Open a plain text file to store the retrieved sample data
@@ -52,27 +52,27 @@ while True:
         break
 
     # Poll the latest samples
-    dt = tk.getNewestSample()
-    if dt is not None:
+    smp = tk.getNewestSample()
+    if smp is not None:
         # Grab gaze, HREF, raw, & pupil size data
-        if dt.isRightSample():
-            gaze = dt.getRightEye().getGaze()
-            href = dt.getRightEye().getHREF()
-            raw = dt.getRightEye().getRawPupil()
-            pupil = dt.getRightEye().getPupilSize()
-        elif dt.isLeftSample():
-            gaze = dt.getLeftEye().getGaze()
-            href = dt.getLeftEye().getHREF()
-            raw = dt.getLeftEye().getRawPupil()
-            pupil = dt.getLeftEye().getPupilSize()
+        if smp.isRightSample():
+            gaze = smp.getRightEye().getGaze()
+            href = smp.getRightEye().getHREF()
+            raw = smp.getRightEye().getRawPupil()
+            pupil = smp.getRightEye().getPupilSize()
+        elif smp.isLeftSample():
+            gaze = smp.getLeftEye().getGaze()
+            href = smp.getLeftEye().getHREF()
+            raw = smp.getLeftEye().getRawPupil()
+            pupil = smp.getLeftEye().getPupilSize()
 
-        timestamp = dt.getTime()
+        timestamp = smp.getTime()
         
         # Save gaze, HREF, raw, & pupil data to the plain text
         # file, if the sample is new
         if timestamp > smp_time:
-            smp = map(str, [timestamp, gaze, href, raw, pupil])
-            text_file.write('\t'.join(smp) + '\n')
+            smp_data = map(str, [timestamp, gaze, href, raw, pupil])
+            text_file.write('\t'.join(smp_data) + '\n')
             smp_time = timestamp
 
 # Stop recording

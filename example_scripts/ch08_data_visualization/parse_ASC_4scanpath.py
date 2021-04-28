@@ -5,7 +5,7 @@
 # Date: 2/9/2021
 #
 # Description:
-# Parse an ASC file to extract fixations, then plot the scan path.
+# Parse an ASC file to extract fixations, then plot the scanpath.
 
 import os
 from PIL import Image, ImageDraw
@@ -49,7 +49,7 @@ for line in asc:
             fix_coords.append((x, y))
             fix_duration.append(duration)
 
-    # Look for the message marking image offset, draw the scan path
+    # Look for the message marking image offset, draw the scanpath
     if 'image_offset' in line:
         # Open the image and resize it to fill up the screen
         img = os.path.join('freeview', bg_image)
@@ -58,10 +58,11 @@ for line in asc:
         # Create an ImageDraw object
         draw = ImageDraw.Draw(pic)
 
-        # Draw the scan path
+        # Draw the scanpath
         draw.line(fix_coords, fill=(0, 0, 255), width=2)
 
-        # Draw circles to represent the fixations
+        # Draw circles to represent the fixations, the diameter reflects
+        # the fixation duration, scaled to its maximum
         for i, d in enumerate(fix_duration):
             sz = sqrt(d / max(fix_duration) * 256)
             gx, gy = fix_coords[i]

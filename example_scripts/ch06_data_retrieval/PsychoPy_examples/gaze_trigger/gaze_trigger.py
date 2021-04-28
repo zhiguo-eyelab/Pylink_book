@@ -2,7 +2,7 @@
 #
 # Filename: gaze_trigger.py
 # Author: Zhiguo Wang
-# Date: 2/6/2021
+# Date: 4/26/2021
 #
 # Description:
 # A gaze trigger implemented in PsychoPy
@@ -22,7 +22,7 @@ tk.openDataFile('psychopy.edf')
 tk.setOfflineMode()
 
 # Make all types of eye events available over the link, especially the
-# FIXUPDATE event, which report the current status of a fixation at
+# FIXUPDATE event, which reports the current status of a fixation at
 # predefined intervals (default = 50 ms)
 event_flags = 'LEFT,RIGHT,FIXATION,FIXUPDATE,SACCADE,BLINK,BUTTON,INPUT'
 tk.sendCommand(f'link_event_filter = {event_flags}')
@@ -64,8 +64,17 @@ for i in range(3):
     # Start recording
     tk.startRecording(1, 1, 1, 1)
     
-    # Cache some samples
-    pylink.msecDelay(100)
+    # Wait for the block start event to arrive, give a warning
+    # if no event or sample is available
+    block_start = tk.waitForBlockStart(100, 1, 1)
+    if block_start == 0:
+        print("ERROR: No link data received!")
+
+    # Check eye availability; 0-left, 1-right, 2-binocular
+    # read data from the right eye if tracking in binocular mode
+    eye_to_read = tk.eyeAvailable()
+    if eye_to_read == 2:
+        eye_to_read = 1
 
     # Show the fixation dot
     fix.draw()
@@ -81,7 +90,7 @@ for i in range(3):
         dt = tk.getNextData()
         if dt > 0:
             ev = tk.getFloatData()
-            if dt == pylink.FIXUPDATE:
+            if (ev.getEye() == eye_to_read) and (dt == pylink.FIXUPDATE):
                 # Update fixation_start_time, following the first
                 # FIXUPDATE event
                 if fixation_start_time < 0:

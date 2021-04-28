@@ -2,14 +2,13 @@
 #
 # Filename: TTL_through_host.py
 # Author: Zhiguo Wang
-# Date: 2/5/2021
+# Date: 4/27/2021
 #
 # Description:
-# Send TTL through the EyeLink Host PC
-# Here we assume an EyeLink 1000 Plus tracker is being tested. The
-# base address is 0x8, and address for the Control Register is 0xA
-# for EyeLink 1000, the base address is 0x378, address for the Control
-# Register is 0x37A
+# Sending TTLs through the EyeLink Host PC
+# Here we assume an EyeLink 1000 Plus tracker is being tested, so the
+# base address is 0x8. For EyeLink 1000, the base address is 0x378
+
 
 import pylink
 
@@ -21,9 +20,6 @@ tk.openDataFile('ttl_test.edf')
 
 # Start recording
 tk.startRecording(1, 1, 1, 1)
-
-# Make sure the Bi-Directional mode is off on the Host
-tk.writeIOPort(0xA, 0)
 
 # Using the Pylink function writeIOPort to send TTLs
 

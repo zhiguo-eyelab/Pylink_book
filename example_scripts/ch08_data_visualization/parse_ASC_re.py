@@ -17,7 +17,7 @@ asc = open(os.path.join('freeview', 'freeview.asc'))
 efix = []  # fixation end events
 esac = []  # saccade end events
 for line in asc:
-    # Extract all numbers and put it in a list
+    # Extract all numbers and put them in a list
     tmp_data = [float(x) for x in re.findall(r'-?\d+\.?\d*', line)]
 
     # retrieve events parsed from the right eye recording
@@ -30,7 +30,7 @@ for line in asc:
 
 # Put the extracted data into pandas data frames
 # EFIX R 80790054 80790349 296 981.3 554.5 936
-efix_colname = ['startT', 'endT', 'duration', 'avgX', 'avgY', 'pupil']
+efix_colname = ['startT', 'endT', 'duration', 'avgX', 'avgY', 'avgPupil']
 efixFRM = pd.DataFrame(efix, columns=efix_colname)
 # ESACC R 80790350 80790372 23 982.6 551.8 864.9 587.9 1.94 151
 esac_colname = ['startT', 'endT', 'duration', 'startX', 'startY',

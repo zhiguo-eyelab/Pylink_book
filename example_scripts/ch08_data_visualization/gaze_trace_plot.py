@@ -2,7 +2,7 @@
 #
 # Filename: gaze_trace_plot.py
 # Author: Zhiguo Wang
-# Date: 2/8/2021
+# Date: 4/28/2021
 #
 # Description:
 # Extract the samples from an ASC file, then plot a gaze trace plot.
@@ -16,8 +16,12 @@ import matplotlib.pyplot as plt
 # Convert EDFs to ASC files with the edf2asc command-line tool
 # If you run this script from IDLE on macOS, be sure to launch IDLE
 # from the command-line (e.g., enter "idle3.6" in the terminal)
-cmd = 'edf2asc -y freeview/freeview.edf'
-os.system(cmd)
+# 
+# Options for the command line “edf2asc” converter
+#     -r, output right-eye data only
+#     -y, overwrite ASC file if exists
+cmd = 'edf2asc -r -y freeview/freeview.edf'
+status = os.system(cmd)
 
 # Open the converted ASC file
 asc = open(os.path.join('freeview', 'freeview.asc'))
@@ -38,7 +42,7 @@ for line in asc:
         # Store samples in lists (timestamp, x, y, pupil size)
         tmp_DF = []
 
-    # A sample data line always starts with an numerical literal
+    # A sample data line always starts with a numerical literal
     if new_trial and re.search('^\d', line):
         # 80855874	 1506.4	  269.0	  729.0	...
         # 80855875	   .	   .	    0.0	...

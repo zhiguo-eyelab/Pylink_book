@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #
-# Filename: link_events_2.py
+# Filename: event_retrieval.py
 # Author: Zhiguo Wang
-# Date: 2/6/2021
+# Date: 4/26/2021
 #
 # Description:
 # A short script illustrating online retrieval of eye events
@@ -13,7 +13,7 @@ import pylink
 tk = pylink.EyeLink('100.1.1.1')
 
 # Open an EDF data file on the Host PC
-tk.openDataFile('ev_test2.edf')
+tk.openDataFile('ev_test.edf')
 
 # Put the tracker in offline mode before we change tracking parameters
 tk.setOfflineMode()
@@ -35,12 +35,21 @@ tk.doTrackerSetup()
 tk.setOfflineMode()
 
 # Start recording
-error = tk.startRecording(1, 1, 1, 1)
+tk.startRecording(1, 1, 1, 1)
 
-# Cache some samples for event parsing
-pylink.msecDelay(100)
+# Wait for the block start event to arrive, give a warning
+# if no event or sample is available
+block_start = tk.waitForBlockStart(100, 1, 1)
+if block_start == 0:
+    print("ERROR: No link data received!")
 
-# Current tracker time
+# Check eye availability; 0-left, 1-right, 2-binocular
+# read data from the right eye if tracking in binocular mode
+eye_to_read = tk.eyeAvailable()
+if eye_to_read == 2:
+    eye_to_read = 1
+
+# Get the current tracker time
 t_start = tk.trackerTime()
 while True:
     # Break after 5 seconds have elapsed
@@ -51,25 +60,19 @@ while True:
     dt = tk.getNextData()
     if dt > 0:
         ev = tk.getFloatData()
-        if dt == pylink.ENDSACC:
-            print('ENDSACC Event: \n',
-                  'Amplitude', ev.getAmplitude(), '\n',
-                  'Angle', ev.getAngle(), '\n',
-                  'AverageVelocity', ev.getAverageVelocity(), '\n',
-                  'PeakVelocity', ev.getPeakVelocity(), '\n',
-                  'StartTime', ev.getStartTime(), '\n',
-                  'StartGaze', ev.getStartGaze(), '\n',
-                  'StartHREF', ev.getStartHREF(), '\n',
-                  'StartPPD', ev.getStartPPD(), '\n',
-                  'StartVelocity', ev.getStartVelocity(), '\n',
-                  'EndTime', ev.getEndTime(), '\n',
-                  'EndGaze', ev.getEndGaze(), '\n',
-                  'EndHREF', ev.getEndHREF(), '\n',
-                  'StartPPD', ev.getStartPPD(), '\n',
-                  'EndVelocity', ev.getEndVelocity(), '\n',
-                  'Eye', ev.getEye(), '\n',
-                  'Time', ev.getTime(), '\n',
-                  'Type', ev.getType(), '\n')
+        # Look for right eye events only; 0-left, 1-right
+        if ev.getEye() == eye_to_read： 
+            # Send a message to the tracker when an event is
+            # received over the link; include the timestamp
+            # in the message to examine the link delay
+            if dt == pylink.STARTSACC:
+                tk.sendMessage(f'STARTSACC {ev.getTime()}')
+            if dt == pylink.ENDSACC:
+                tk.sendMessage(f'ENDSACC {ev.getTime()}')
+            if dt == pylink.STARTFIX:
+                tk.sendMessage(f'STARTFIX {ev.getTime()}')
+            if dt == pylink.ENDFIX:
+                tk.sendMessage(f'ENDFIX {ev.getTime()}')
 
 # Stop recording
 tk.stopRecording()
@@ -78,7 +81,7 @@ tk.stopRecording()
 tk.closeDataFile()
 
 # Download the EDF data file from Host
-tk.receiveDataFile('ev_test2.edf', 'ev_test2.edf')
+tk.receiveDataFile('ev_test.edf', 'ev_test.edf')
 
 # Close the link to the tracker
 tk.close()

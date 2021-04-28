@@ -34,7 +34,7 @@ pylink.openGraphicsEx(genv)
 # press C to calibrate, V to validate, O to exit the calibration routine
 tk.doTrackerSetup()
 
-# Close the connection to he tracker
+# Close the connection to the tracker
 tk.close()
 
 # Quit PsychoPy

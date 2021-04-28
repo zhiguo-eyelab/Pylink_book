@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #
-# Filename: gc_window.py
+# Filename: gaze_contingent_window.py
 # Author: Zhiguo Wang
-# Date: 2/6/2021
+# Date: 4/26/2021
 #
 # Description:
 # A gaze-contingent window task implemented in PsychoPy
@@ -46,7 +46,7 @@ calib_msg.draw()
 win.flip()
 tk.doTrackerSetup()
 
-# Set up a aperture and use it as a gaze-contingent window
+# Set up an aperture and use it as a gaze-contingent window
 gaze_window = visual.Aperture(win, shape='square', size=200)
 gaze_window.enabled = True
 

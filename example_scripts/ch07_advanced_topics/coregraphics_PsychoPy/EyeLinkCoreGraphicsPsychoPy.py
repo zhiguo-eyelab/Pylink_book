@@ -210,7 +210,7 @@ class EyeLinkCoreGraphicsPsychoPy(pylink.EyeLinkCustomDisplay):
         w, h = self._display.size
         X, Y = self._mouse.getPos()
 
-        # scale the mouse position so the cursor stay on the camera image
+        # scale the mouse position, so the cursor stays on the camera image
         mX = (X + w/2.0)/w*self._size[0]/2.0
         mY = (h/2.0 - Y)/h*self._size[1]/2.0
 
