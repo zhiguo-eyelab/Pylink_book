@@ -2,7 +2,7 @@
 #
 # Filename: parse_ASC_re.py
 # Author: Zhiguo Wang
-# Date: 2/8/2021
+# Date: 5/25/2021
 #
 # Description:
 # Parse the ASC file with regular expressions (re).

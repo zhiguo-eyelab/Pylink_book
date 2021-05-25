@@ -76,7 +76,7 @@ while True:
                       'EndTime', ev.getEndTime(), '\n',
                       'EndGaze', ev.getEndGaze(), '\n',
                       'EndHREF', ev.getEndHREF(), '\n',
-                      'StartPPD', ev.getStartPPD(), '\n',
+                      'EndPPD', ev.getEndPPD(), '\n',
                       'EndVelocity', ev.getEndVelocity(), '\n',
                       'Eye', ev.getEye(), '\n',
                       'Time', ev.getTime(), '\n',

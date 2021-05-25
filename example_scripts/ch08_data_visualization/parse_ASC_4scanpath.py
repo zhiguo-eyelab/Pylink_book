@@ -2,7 +2,7 @@
 #
 # Filename: parse_ASC_4scanpath.py
 # Author: Zhiguo Wang
-# Date: 2/9/2021
+# Date: 5/25/2021
 #
 # Description:
 # Parse an ASC file to extract fixations, then plot the scanpath.

@@ -86,7 +86,7 @@ def run_trial(trial_duration, movement_pars):
     movement_pars: [amp_x, amp_y, phase_x, phase_y, freq_x, freq_y]
     The following equation defines a sinusoidal movement pattern
     y(t) = amplitude * sin(2 * pi * frequency * t + phase)
-    for circular or elliptical movements, the phase in x and y directions
+    for circular or elliptic movements, the phase in x and y directions
     should be pi/2 (direction matters)."""
 
     # Parse the movement pattern parameters

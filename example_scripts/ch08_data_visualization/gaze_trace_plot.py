@@ -2,7 +2,7 @@
 #
 # Filename: gaze_trace_plot.py
 # Author: Zhiguo Wang
-# Date: 4/28/2021
+# Date: 5/25/2021
 #
 # Description:
 # Extract the samples from an ASC file, then plot a gaze trace plot.
@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 #     -r, output right-eye data only
 #     -y, overwrite ASC file if exists
 cmd = 'edf2asc -r -y freeview/freeview.edf'
-status = os.system(cmd)
+os.system(cmd)
 
 # Open the converted ASC file
 asc = open(os.path.join('freeview', 'freeview.asc'))
