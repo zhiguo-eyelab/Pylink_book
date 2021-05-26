@@ -2,7 +2,7 @@
 #
 # Filename: event_retrieval.py
 # Author: Zhiguo Wang
-# Date: 4/26/2021
+# Date: 5/26/2021
 #
 # Description:
 # A short script illustrating online retrieval of eye events
@@ -58,10 +58,11 @@ while True:
 
     # Retrieve the oldest event in the buffer
     dt = tk.getNextData()
-    if dt > 0:
+    if dt in [pylink.STARTSACC, pylink.ENDSACC,
+              pylink.STARTFIX, pylink.ENDFIX]:
         ev = tk.getFloatData()
         # Look for right eye events only; 0-left, 1-right
-        if ev.getEye() == eye_to_read： 
+        if ev.getEye() == eye_to_read:
             # Send a message to the tracker when an event is
             # received over the link; include the timestamp
             # in the message to examine the link delay

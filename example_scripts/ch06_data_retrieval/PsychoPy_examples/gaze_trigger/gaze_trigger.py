@@ -2,7 +2,7 @@
 #
 # Filename: gaze_trigger.py
 # Author: Zhiguo Wang
-# Date: 4/26/2021
+# Date: 5/26/2021
 #
 # Description:
 # A gaze trigger implemented in PsychoPy
@@ -88,17 +88,9 @@ for i in range(3):
     while not triggered:
         # Check if any new events are available
         dt = tk.getNextData()
-        if dt > 0:
+        if dt == pylink.FIXUPDATE:
             ev = tk.getFloatData()
-            if (ev.getEye() == eye_to_read) and (dt == pylink.FIXUPDATE):
-                # Update fixation_start_time, following the first
-                # FIXUPDATE event
-                if fixation_start_time < 0:
-                    fixation_start_time = ev.getStartTime()
-
-                # How much time has elapsed within the current fixation
-                fixation_duration = ev.getEndTime() - fixation_start_time
-
+            if ev.getEye() == eye_to_read:
                 # 1 deg = ? pixels in the current fixation
                 ppd_x, ppd_y = ev.getEndPPD()
                 
@@ -107,10 +99,18 @@ for i in range(3):
                 gaze_error = hypot((gaze_x - fix_dot_x)/ppd_x,
                                    (gaze_y - fix_dot_y)/ppd_y)
                 
-                # Break if the gaze is on the fixation dot
-                # (< 1.5 degree of visual angle) for > 300 ms
-                if fixation_duration >= 300 and gaze_error < 1.5:
-                    triggered = True
+                if gaze_error < 1.5:
+                    # Update fixation_start_time, following the first
+                    # FIXUPDATE event
+                    if fixation_start_time < 0:
+                        fixation_start_time = ev.getStartTime()
+                    else:
+                        # Break if the gaze is on the fixation dot
+                        # for > 300 ms
+                        if (ev.getEndTime() - fixation_start_time) >= 300:
+                            triggered = True
+                else:
+                    fixation_start_time = -32768
 
     # Show the image for 2 secs
     img.draw()

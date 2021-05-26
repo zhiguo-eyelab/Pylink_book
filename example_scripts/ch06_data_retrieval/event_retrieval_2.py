@@ -58,29 +58,28 @@ while True:
 
     # Retrieve the oldest event in the buffer
     dt = tk.getNextData()
-    if dt > 0:
+    if dt == pylink.ENDSACC:
         ev = tk.getFloatData()
         # Look for right eye events only; 0-left, 1-right
-        if ev.getEye() == eye_to_read：
-            if dt == pylink.ENDSACC:
-                print('ENDSACC Event: \n',
-                      'Amplitude', ev.getAmplitude(), '\n',
-                      'Angle', ev.getAngle(), '\n',
-                      'AverageVelocity', ev.getAverageVelocity(), '\n',
-                      'PeakVelocity', ev.getPeakVelocity(), '\n',
-                      'StartTime', ev.getStartTime(), '\n',
-                      'StartGaze', ev.getStartGaze(), '\n',
-                      'StartHREF', ev.getStartHREF(), '\n',
-                      'StartPPD', ev.getStartPPD(), '\n',
-                      'StartVelocity', ev.getStartVelocity(), '\n',
-                      'EndTime', ev.getEndTime(), '\n',
-                      'EndGaze', ev.getEndGaze(), '\n',
-                      'EndHREF', ev.getEndHREF(), '\n',
-                      'EndPPD', ev.getEndPPD(), '\n',
-                      'EndVelocity', ev.getEndVelocity(), '\n',
-                      'Eye', ev.getEye(), '\n',
-                      'Time', ev.getTime(), '\n',
-                      'Type', ev.getType(), '\n')
+        if ev.getEye() == eye_to_read:
+            print('ENDSACC Event: \n',
+                  'Amplitude', ev.getAmplitude(), '\n',
+                  'Angle', ev.getAngle(), '\n',
+                  'AverageVelocity', ev.getAverageVelocity(), '\n',
+                  'PeakVelocity', ev.getPeakVelocity(), '\n',
+                  'StartTime', ev.getStartTime(), '\n',
+                  'StartGaze', ev.getStartGaze(), '\n',
+                  'StartHREF', ev.getStartHREF(), '\n',
+                  'StartPPD', ev.getStartPPD(), '\n',
+                  'StartVelocity', ev.getStartVelocity(), '\n',
+                  'EndTime', ev.getEndTime(), '\n',
+                  'EndGaze', ev.getEndGaze(), '\n',
+                  'EndHREF', ev.getEndHREF(), '\n',
+                  'EndPPD', ev.getEndPPD(), '\n',
+                  'EndVelocity', ev.getEndVelocity(), '\n',
+                  'Eye', ev.getEye(), '\n',
+                  'Time', ev.getTime(), '\n',
+                  'Type', ev.getType(), '\n')
 
 # Stop recording
 tk.stopRecording()
